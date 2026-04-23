@@ -125,12 +125,17 @@
     },
 
     async synth(text) {
-      if (!pipe) throw new Error('Modelo no cargado');
-      // No se pasan embeddings, usa la voz predeterminada del modelo
-      const result = await pipe(text);
-      return result; // { audio: Float32Array, sampling_rate: number }
-    }
-  };
+  if (!pipe) throw new Error('Modelo no cargado');
+  
+  // SpeechT5 REQUIERE un perfil de voz (embeddings)
+  const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
+  
+  const result = await pipe(text, { 
+    speaker_embeddings 
+  });
+  
+  return result; // { audio: Float32Array, sampling_rate: number }
+}
 
   window.__encodeWAV = function(samples, sr) {
     const buf = new ArrayBuffer(44 + samples.length * 2);
