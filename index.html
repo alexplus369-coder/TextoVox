@@ -111,7 +111,8 @@
     async load(onProgress) {
       if (pipe) return;
       this.loading = true;
-      pipe = await pipeline('text-to-speech','onnx-community/Kokoro-82M-v1.0',{
+      // Como debe quedar (corregido)
+        pipe = await pipeline('text-to-speech','onnx-community/Kokoro-82M-v1.0-ONNX',{
         dtype:'q8', progress_callback: onProgress
       });
       this.loaded = true; this.loading = false;
