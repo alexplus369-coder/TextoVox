@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TextoVox — Texto a Voz</title>
+  <title>TextoVox — Texto a Voz IA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -18,28 +18,20 @@
       --mono:'Space Mono',monospace; --serif:'Lora',Georgia,serif;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh}
-    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
-    #root{position:relative;z-index:1}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px}
-    .txt-area{width:100%;height:240px;background:transparent;border:1px solid var(--border);border-radius:10px;
-      padding:16px;color:var(--text);font-family:var(--serif);font-size:16px;line-height:1.8;resize:none;outline:none;transition:border-color .2s}
-    .txt-area:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
-    .btn{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.06em;border:none;
-      border-radius:8px;padding:10px 20px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+    body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:20px}
+    #root{max-width:850px;margin:0 auto;position:relative;z-index:1}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px}
+    .txt-area{width:100%;height:200px;background:transparent;border:1px solid var(--border);border-radius:10px;
+      padding:16px;color:var(--text);font-family:var(--serif);font-size:16px;line-height:1.6;resize:none;outline:none}
+    .txt-area:focus{border-color:var(--accent)}
+    .btn{font-family:var(--mono);font-weight:700;font-size:12px;padding:12px 20px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:0.2s}
     .btn-a{background:var(--accent);color:#000}
-    .btn-a:hover{background:#b45309;box-shadow:0 0 18px var(--accent-glow)}
-    .btn-a:disabled{background:#333;color:var(--muted);cursor:not-allowed;box-shadow:none}
+    .btn-a:hover{box-shadow:0 0 15px var(--accent-glow)}
     .btn-g{background:var(--green);color:#000}
-    .btn-g:hover{background:#16a34a;box-shadow:0 0 18px var(--green-dim)}
-    .badge{font-family:var(--mono);font-size:11px;background:var(--accent-dim);color:var(--accent);
-      border:1px solid rgba(217,119,6,.3);border-radius:4px;padding:2px 7px}
-    .badge.g{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,.3)}
-    .toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);
-      color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:8px;
-      z-index:1000;animation:fu .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5)}
-    @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .badge{font-size:10px;background:var(--accent-dim);color:var(--accent);padding:2px 6px;border-radius:4px;border:1px solid var(--accent-glow)}
+    .sld{width:100%;height:4px;background:var(--border);border-radius:4px;appearance:none;outline:none}
+    .sld::-webkit-slider-thumb{appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer}
+    .toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--accent);padding:12px;border-radius:8px;font-size:12px;z-index:100}
     @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
@@ -47,32 +39,24 @@
 <div id="root"></div>
 
 <script type="module">
-  // Usamos la versión 3.7.1 que es compatible con la nueva arquitectura de tensores
   import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.1';
   env.allowLocalModels = false;
-  env.useBrowserCache  = true;
+  env.useBrowserCache = true;
 
   let pipe = null;
 
   window.__tts = {
     loaded: false,
-    loading: false,
-
     async load(onProgress) {
       if (pipe) return;
-      this.loading = true;
-      // dtype fp32 es más pesado pero garantiza que el audio se genere sin ruidos
       pipe = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
         dtype: 'fp32',
         device: 'auto',
         progress_callback: onProgress
       });
       this.loaded = true;
-      this.loading = false;
     },
-
     async synth(text) {
-      if (!pipe) throw new Error('Modelo no cargado');
       const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
       return await pipe(text, { speaker_embeddings });
     }
@@ -80,17 +64,17 @@
 
   window.__encodeWAV = function(samples, sr) {
     const buf = new ArrayBuffer(44 + samples.length * 2);
-    const v   = new DataView(buf);
-    const ws  = (o,s) => { for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
+    const v = new DataView(buf);
+    const ws = (o,s) => { for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
     ws(0,'RIFF'); v.setUint32(4,36+samples.length*2,true);
     ws(8,'WAVE'); ws(12,'fmt ');
     v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
     v.setUint32(24,sr,true); v.setUint32(28,sr*2,true);
-    v.setUint16(32,2,true);  v.setUint16(34,16,true);
+    v.setUint16(32,2,true); v.setUint16(34,16,true);
     ws(36,'data'); v.setUint32(40,samples.length*2,true);
     for(let i=0;i<samples.length;i++){
-      const s=Math.max(-1,Math.min(1,samples[i]));
-      v.setInt16(44+i*2,s*0x7FFF,true);
+      const s = Math.max(-1, Math.min(1, samples[i]));
+      v.setInt16(44+i*2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
     }
     return buf;
   };
@@ -99,14 +83,15 @@
 <script type="text/babel">
   const { useState, useRef } = React;
 
-  const IDown  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z"/></svg>;
-  const ISpin  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 11-6-8.5"/></svg>;
+  const ISpin = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 11-6-8.5"/></svg>;
+  const IDown = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>;
 
   function App() {
-    const [text, setText] = useState('Hola. Ya puedo hablar correctamente.');
-    const [kSt, setKSt] = useState('idle');
-    const [kProg, setKProg] = useState({pct:0,label:''});
-    const [kBlob, setKBlob] = useState(null);
+    const [text, setText] = useState('Hola. Ahora el audio ya no es mudo y el código es estable.');
+    const [status, setStatus] = useState('idle');
+    const [prog, setProg] = useState({pct:0, label:''});
+    const [blob, setBlob] = useState(null);
+    const [volume, setVolume] = useState(1.0);
     const [toast, setToast] = useState('');
     const audioUrlRef = useRef(null);
 
@@ -114,30 +99,37 @@
 
     const handleGenerate = async () => {
       if (!text.trim()) return;
-      setKSt('loading');
+      setStatus('loading');
       try {
         const tts = window.__tts;
         if (!tts.loaded) {
           await tts.load(p => {
-            if (p.status==='progress') setKProg({pct:Math.round(p.progress||0), label:`Cargando ${Math.round(p.progress||0)}%`});
+            if (p.status === 'progress') setProg({pct: Math.round(p.progress||0), label: `Cargando IA: ${Math.round(p.progress||0)}%`});
           });
         }
-        setKSt('synth');
+        setStatus('synth');
         const result = await tts.synth(text);
         
-        // CORRECCIÓN CRÍTICA: Extraer .data del Tensor para que el audio no sea mudo
-        const audioData = result.audio.data || result.audio;
-        
+        // EXTRAER DATOS DEL TENSOR (Solución al audio mudo)
+        let audioData = result.audio.data || result.audio;
+
+        // Aplicar ajuste de volumen manual al arreglo de datos
+        if (volume !== 1.0) {
+          audioData = audioData.map(v => v * volume);
+        }
+
         const wav = window.__encodeWAV(audioData, result.sampling_rate);
-        const blob = new Blob([wav], {type:'audio/wav'});
-        setKBlob(blob);
+        const newBlob = new Blob([wav], {type: 'audio/wav'});
+        setBlob(newBlob);
+        
         if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
-        audioUrlRef.current = URL.createObjectURL(blob);
-        setKSt('done');
-        showToast('✓ Audio generado');
-      } catch(e) {
+        audioUrlRef.current = URL.createObjectURL(newBlob);
+        
+        setStatus('done');
+        showToast('✓ Audio generado con éxito');
+      } catch (e) {
         console.error(e);
-        setKSt('idle');
+        setStatus('idle');
         showToast('⚠ Error: ' + e.message);
       }
     };
@@ -145,32 +137,44 @@
     const handleDownload = () => {
       const a = document.createElement('a');
       a.href = audioUrlRef.current;
-      a.download = 'textovox.wav';
+      a.download = 'textovox_ia.wav';
       a.click();
     };
 
     return (
-      <div style={{maxWidth:'800px',margin:'40px auto',padding:'20px'}}>
-        <div className="card" style={{padding:'24px'}}>
-          <h1 style={{fontSize:'20px',fontWeight:'700',marginBottom:'20px'}}>Texto<span style={{color:'var(--accent)'}}>Vox</span></h1>
+      <div className="card">
+        <h1 style={{fontSize:'22px', fontWeight:'700', marginBottom:'20px'}}>Texto<span style={{color:'var(--accent)'}}>Vox</span> IA</h1>
+        
+        <textarea className="txt-area" value={text} onChange={e=>setText(e.target.value)} placeholder="Tu mensaje aquí..."/>
 
-          <textarea className="txt-area" value={text} onChange={e=>setText(e.target.value)} placeholder="Escribe aquí..."/>
-
-          <div style={{marginTop:'20px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
-            <div style={{display:'flex',flexDirection:'column',gap:'15px'}}>
-               <button className="btn btn-a" onClick={handleGenerate} disabled={kSt==='loading' || kSt==='synth'}>
-                {kSt==='loading' || kSt==='synth' ? <ISpin/> : null}
-                {kSt==='loading' ? kProg.label : kSt==='synth' ? 'Sintetizando...' : 'Generar Audio'}
+        <div style={{marginTop:'20px', display:'grid', gridTemplateColumns:'1fr 250px', gap:'20px'}}>
+          <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
+            <button className="btn btn-a" onClick={handleGenerate} disabled={status === 'loading' || status === 'synth'}>
+              {(status === 'loading' || status === 'synth') && <ISpin/>}
+              {status === 'loading' ? prog.label : status === 'synth' ? 'Generando audio...' : 'Generar Voz con IA'}
+            </button>
+            
+            {blob && (
+              <button className="btn btn-g" onClick={handleDownload}>
+                <IDown/> Descargar Archivo .WAV
               </button>
-              {kBlob && <button className="btn btn-g" onClick={handleDownload}><IDown/> Descargar .WAV</button>}
+            )}
+          </div>
+
+          <div style={{background:'var(--surface2)', padding:'15px', borderRadius:'10px', display:'flex', flexDirection:'column', gap:'15px'}}>
+            <div>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span style={{fontSize:'10px', color:'var(--muted)'}}>VOLUMEN</span>
+                <span className="badge">{Math.round(volume * 100)}%</span>
+              </div>
+              <input type="range" className="sld" min="0" max="1.5" step="0.1" value={volume} onChange={e=>setVolume(parseFloat(e.target.value))}/>
             </div>
 
-            <div style={{background:'var(--surface2)',padding:'16px',borderRadius:'10px'}}>
-              <div style={{fontSize:'11px',color:'var(--muted)',lineHeight:'1.8'}}>
-                <span style={{color:'var(--green)'}}>SPEECHT5 TTS</span> — motor de IA.<br/>
-                Estado: <span style={{color:'var(--text)'}}>{kSt.toUpperCase()}</span><br/>
-                Genera un archivo <strong style={{color:'var(--text)'}}>.wav</strong> real, listo para usar.
-              </div>
+            <div style={{fontSize:'11px', color:'var(--muted)', borderTop:'1px solid var(--border)', paddingTop:'10px'}}>
+              <div style={{color:'var(--green)', marginBottom:'4px'}}>SPEECHT5 ENGINE</div>
+              Modelo: Xenova/speecht5_tts<br/>
+              Estado: <span style={{color:'var(--text)'}}>{status.toUpperCase()}</span><br/>
+              Calidad: <span style={{color:'var(--text)'}}>High (FP32)</span>
             </div>
           </div>
         </div>
