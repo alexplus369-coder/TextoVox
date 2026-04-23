@@ -9,35 +9,82 @@
     :root {
       --bg:#0c0c10; --surf:#13131a; --surf2:#1a1a24; --brd:#2a2a35;
       --acc:#d97706; --adim:rgba(217,119,6,.15); --aglow:rgba(217,119,6,.4);
-      --grn:#22c55e; --gdim:rgba(34,197,94,.15);
+      --grn:#22c55e; --gdim:rgba(34,197,94,.14); --gbrd:rgba(34,197,94,.25);
+      --blu:#3b82f6; --bludim:rgba(59,130,246,.12); --blubrd:rgba(59,130,246,.3);
       --txt:#e8e6e0; --muted:#6b6878;
       --mono:'Space Mono',monospace; --serif:'Lora',Georgia,serif;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--txt);font-family:var(--mono);min-height:100vh;
-      display:flex;align-items:flex-start;justify-content:center;padding:32px 16px}
-    .wrap{width:100%;max-width:660px;display:flex;flex-direction:column;gap:16px}
+      display:flex;align-items:flex-start;justify-content:center;padding:28px 14px}
+    .wrap{width:100%;max-width:680px;display:flex;flex-direction:column;gap:14px}
 
+    /* Header */
     .hline{width:40px;height:2px;background:linear-gradient(90deg,var(--acc),transparent);border-radius:2px}
     h1{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:10px}
     h1 span{color:var(--acc)}
     .sub{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
 
-    .card{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:20px;
-      display:flex;flex-direction:column;gap:14px}
+    /* Cards */
+    .card{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:18px;
+      display:flex;flex-direction:column;gap:13px}
 
-    textarea{width:100%;height:200px;background:transparent;border:1px solid var(--brd);
+    /* HF Token card */
+    .hf-card{background:var(--surf2);border:1px solid var(--brd);border-radius:12px;padding:16px;
+      display:flex;flex-direction:column;gap:10px}
+    .hf-card.unlocked{border-color:var(--gbrd);background:rgba(34,197,94,.04)}
+    .hf-header{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.06em}
+    .hf-header .lock-icon{font-size:16px}
+
+    .hf-row{display:flex;gap:8px;align-items:stretch}
+    .hf-input{flex:1;background:#0c0c10;border:1px solid var(--brd);border-radius:8px;
+      color:var(--txt);font-family:var(--mono);font-size:11px;padding:9px 12px;outline:none;
+      letter-spacing:.04em;transition:border-color .2s}
+    .hf-input:focus{border-color:var(--blu);box-shadow:0 0 0 2px var(--bludim)}
+    .hf-input.valid{border-color:var(--grn)}
+    .hf-input::placeholder{color:var(--muted)}
+
+    .btn-small{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.06em;
+      border:none;border-radius:8px;padding:9px 14px;cursor:pointer;transition:all .15s;
+      display:flex;align-items:center;gap:6px;white-space:nowrap}
+    .btn-apply{background:var(--blu);color:#fff}
+    .btn-apply:hover{background:#2563eb}
+    .btn-clear{background:transparent;color:var(--muted);border:1px solid var(--brd)}
+    .btn-clear:hover{color:var(--txt);border-color:var(--muted)}
+
+    .hf-hint{font-size:10px;color:var(--muted);line-height:1.7}
+    .hf-hint a{color:var(--blu);text-decoration:none}
+    .hf-hint a:hover{text-decoration:underline}
+    .hf-status{font-size:10px;display:flex;align-items:center;gap:6px}
+
+    /* Engine tabs */
+    .eng-tabs{display:flex;gap:0;border-bottom:1px solid var(--brd)}
+    .eng-tab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+      padding:8px 16px;border:none;background:transparent;color:var(--muted);cursor:pointer;
+      border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+    .eng-tab:hover{color:var(--txt)}
+    .eng-tab.active-mms{color:var(--grn);border-bottom-color:var(--grn)}
+    .eng-tab.active-kokoro{color:var(--acc);border-bottom-color:var(--acc)}
+    .eng-tab.locked{opacity:.35;cursor:not-allowed}
+
+    /* Textarea */
+    textarea{width:100%;height:190px;background:transparent;border:1px solid var(--brd);
       border-radius:10px;padding:14px;color:var(--txt);font-family:var(--serif);
       font-size:15px;line-height:1.75;resize:none;outline:none;transition:border-color .2s}
     textarea:focus{border-color:var(--acc);box-shadow:0 0 0 2px var(--adim)}
 
-    .stats{display:flex;gap:12px;font-size:10px;color:var(--muted);flex-wrap:wrap}
+    .stats{display:flex;gap:10px;font-size:10px;color:var(--muted);flex-wrap:wrap}
 
-    .field-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    /* Field label */
+    .flbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
       display:block;margin-bottom:6px}
     select{width:100%;background:#0f0f14;border:1px solid var(--brd);color:var(--txt);
       font-family:var(--mono);font-size:11px;padding:9px 10px;border-radius:8px;outline:none;cursor:pointer}
     select:focus{border-color:var(--acc)}
+
+    /* Engine panels */
+    .eng-panel{display:none}
+    .eng-panel.show{display:flex;flex-direction:column;gap:13px}
 
     /* Progress */
     .prog{display:none;flex-direction:column;gap:6px}
@@ -47,45 +94,78 @@
     .prog-fill{height:100%;background:var(--grn);border-radius:3px;width:0%;transition:width .4s ease}
 
     /* Error */
-    .err-box{display:none;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.3);
-      border-radius:8px;padding:12px 14px;font-size:11px;color:#f87171;line-height:1.7}
+    .errbox{display:none;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.28);
+      border-radius:8px;padding:11px 14px;font-size:11px;color:#f87171;line-height:1.7}
 
     /* Buttons */
     .btn-row{display:flex;gap:10px;flex-wrap:wrap}
-    button{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.06em;
+    button.btn-main{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.06em;
       border:none;border-radius:8px;padding:11px 20px;cursor:pointer;
       display:flex;align-items:center;gap:8px;transition:all .15s}
-    button:disabled{cursor:not-allowed;opacity:.4}
-    #btn-gen{background:var(--acc);color:#000}
-    #btn-gen:hover:not(:disabled){background:#b45309;box-shadow:0 0 18px var(--aglow)}
-    #btn-dl{background:#166534;color:#4ade80;display:none}
-    #btn-dl:hover{background:#14532d}
+    button.btn-main:disabled{cursor:not-allowed;opacity:.4}
+    .btn-acc{background:var(--acc);color:#000}
+    .btn-acc:hover:not(:disabled){background:#b45309;box-shadow:0 0 18px var(--aglow)}
+    .btn-dl{background:#166534;color:#4ade80;display:none}
+    .btn-dl:hover{background:#14532d}
 
-    /* Player */
-    #audio-wrap{display:none}
     audio{width:100%;border-radius:8px}
 
-    /* Info */
+    /* Info box */
     .info{background:var(--surf2);border:1px solid var(--brd);border-radius:8px;
-      padding:12px 14px;font-size:10px;color:var(--muted);line-height:2}
-    .info .eng{color:var(--grn);font-size:11px;letter-spacing:.06em}
-    .info .badge{display:inline-block;background:var(--gdim);color:var(--grn);
-      border:1px solid rgba(34,197,94,.25);border-radius:3px;padding:1px 6px;font-size:10px}
+      padding:11px 14px;font-size:10px;color:var(--muted);line-height:1.9}
+    .info .eng-name{font-size:11px;letter-spacing:.06em;margin-bottom:2px}
+    .badge{display:inline-block;border-radius:3px;padding:1px 6px;font-size:9px;letter-spacing:.04em}
+    .badge-grn{background:var(--gdim);color:var(--grn);border:1px solid var(--gbrd)}
+    .badge-acc{background:var(--adim);color:var(--acc);border:1px solid rgba(217,119,6,.3)}
+    .badge-muted{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--brd)}
 
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;
       border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .pulse-dot{width:7px;height:7px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:4px}
+    .dot-grn{background:var(--grn);animation:pulse 1.4s infinite}
+    .dot-acc{background:var(--acc);animation:pulse 1.4s infinite}
   </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- Header -->
   <div>
     <div class="hline"></div>
     <h1>Texto<span>Vox</span></h1>
-    <p class="sub">Generador de audio — local · sin API · sin login</p>
+    <p class="sub">Generador de audio — local · sin servidor · código abierto</p>
   </div>
 
+  <!-- ── HuggingFace Token Panel ── -->
+  <div class="hf-card" id="hf-card">
+    <div class="hf-header">
+      <span class="lock-icon" id="lock-icon">🔒</span>
+      <span id="hf-header-txt">HuggingFace Token — Desbloquear voces IA (Kokoro)</span>
+    </div>
+
+    <div class="hf-row">
+      <input type="password" class="hf-input" id="hf-token-input"
+        placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        autocomplete="off" spellcheck="false"/>
+      <button class="btn-small btn-apply" id="btn-apply-token">APLICAR</button>
+      <button class="btn-small btn-clear" id="btn-clear-token" style="display:none">QUITAR</button>
+    </div>
+
+    <div class="hf-hint" id="hf-hint">
+      Token gratuito en
+      <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a>
+      → "New token" → tipo <strong>Read</strong>.<br/>
+      Luego acepta los términos del modelo en
+      <a href="https://huggingface.co/onnx-community/Kokoro-82M-v1.0" target="_blank">onnx-community/Kokoro-82M-v1.0</a>.
+    </div>
+
+    <div class="hf-status" id="hf-status" style="display:none"></div>
+  </div>
+
+  <!-- ── Main card ── -->
   <div class="card">
 
     <textarea id="txt" placeholder="Escribe o pega tu texto aquí…">Hola. Escribe aquí el texto que deseas convertir en un archivo de audio descargable.</textarea>
@@ -96,22 +176,81 @@
       <span id="se">~0s est.</span>
     </div>
 
-    <div>
-      <span class="field-label">Idioma / Voz (MMS-TTS · Meta AI)</span>
-      <select id="lang-sel">
-        <option value="Xenova/mms-tts-spa">🇪🇸 Español</option>
-        <option value="Xenova/mms-tts-eng">🇺🇸 Inglés</option>
-        <option value="Xenova/mms-tts-fra">🇫🇷 Francés</option>
-        <option value="Xenova/mms-tts-deu">🇩🇪 Alemán</option>
-        <option value="Xenova/mms-tts-ita">🇮🇹 Italiano</option>
-        <option value="Xenova/mms-tts-por">🇧🇷 Portugués</option>
-        <option value="Xenova/mms-tts-rus">🇷🇺 Ruso</option>
-        <option value="Xenova/mms-tts-jpn">🇯🇵 Japonés</option>
-        <option value="Xenova/mms-tts-cmn">🇨🇳 Chino mandarín</option>
-        <option value="Xenova/mms-tts-ara">🇸🇦 Árabe</option>
-      </select>
+    <!-- Engine selector tabs -->
+    <div class="eng-tabs">
+      <button class="eng-tab active-mms" id="tab-mms" onclick="switchEngine('mms')">
+        ◆ MMS-TTS (sin login)
+      </button>
+      <button class="eng-tab locked" id="tab-kokoro" onclick="switchEngine('kokoro')">
+        ★ Kokoro IA (token HF)
+      </button>
     </div>
 
+    <!-- MMS panel -->
+    <div class="eng-panel show" id="panel-mms">
+      <div>
+        <span class="flbl">Idioma (1 voz por idioma)</span>
+        <select id="mms-lang">
+          <option value="Xenova/mms-tts-spa">🇪🇸 Español</option>
+          <option value="Xenova/mms-tts-eng">🇺🇸 Inglés (EE.UU.)</option>
+          <option value="Xenova/mms-tts-fra">🇫🇷 Francés</option>
+          <option value="Xenova/mms-tts-deu">🇩🇪 Alemán</option>
+          <option value="Xenova/mms-tts-ita">🇮🇹 Italiano</option>
+          <option value="Xenova/mms-tts-por">🇧🇷 Portugués</option>
+          <option value="Xenova/mms-tts-rus">🇷🇺 Ruso</option>
+          <option value="Xenova/mms-tts-jpn">🇯🇵 Japonés</option>
+          <option value="Xenova/mms-tts-cmn">🇨🇳 Chino mandarín</option>
+          <option value="Xenova/mms-tts-ara">🇸🇦 Árabe</option>
+          <option value="Xenova/mms-tts-hin">🇮🇳 Hindi</option>
+          <option value="Xenova/mms-tts-kor">🇰🇷 Coreano</option>
+        </select>
+      </div>
+      <div class="info">
+        <div class="eng-name" style="color:var(--grn)">META MMS-TTS <span class="badge badge-grn">público</span></div>
+        1100+ idiomas · ~35 MB por idioma · 1 voz neutra por idioma<br/>
+        Sin login, sin token. Cacheado en IndexedDB.
+      </div>
+    </div>
+
+    <!-- Kokoro panel -->
+    <div class="eng-panel" id="panel-kokoro">
+      <div>
+        <span class="flbl">Voz (múltiples opciones)</span>
+        <select id="kokoro-voice">
+          <optgroup label="🇪🇸 Español">
+            <option value="ef_dora">Dora — femenino</option>
+            <option value="em_alex">Alex — masculino</option>
+          </optgroup>
+          <optgroup label="🇺🇸 Inglés americano">
+            <option value="af_heart">Heart — femenino suave</option>
+            <option value="af_bella">Bella — femenino expresivo</option>
+            <option value="af_sarah">Sarah — femenino claro</option>
+            <option value="af_nicole">Nicole — femenino íntimo</option>
+            <option value="am_adam">Adam — masculino</option>
+            <option value="am_michael">Michael — masculino profundo</option>
+          </optgroup>
+          <optgroup label="🇬🇧 Inglés británico">
+            <option value="bf_emma">Emma — femenino</option>
+            <option value="bf_isabella">Isabella — femenino</option>
+            <option value="bm_george">George — masculino</option>
+            <option value="bm_lewis">Lewis — masculino</option>
+          </optgroup>
+          <optgroup label="🌍 Otros idiomas">
+            <option value="ff_siwis">Siwis — Francés femenino</option>
+            <option value="if_sara">Sara — Italiano femenino</option>
+            <option value="hf_alpha">Alpha — Hindi femenino</option>
+            <option value="hm_omega">Omega — Hindi masculino</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="info">
+        <div class="eng-name" style="color:var(--acc)">KOKORO TTS v1.0 <span class="badge badge-acc">requiere token HF</span></div>
+        Motor neuronal VITS · 82M parámetros · q8 · ~80 MB<br/>
+        Múltiples voces expresivas · Requiere aceptar términos en HuggingFace.
+      </div>
+    </div>
+
+    <!-- Progress -->
     <div class="prog" id="prog">
       <div class="prog-top">
         <span id="prog-lbl">Cargando…</span>
@@ -120,77 +259,95 @@
       <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
     </div>
 
-    <div class="err-box" id="err"></div>
+    <!-- Error -->
+    <div class="errbox" id="err"></div>
 
+    <!-- Buttons -->
     <div class="btn-row">
-      <button id="btn-gen">
+      <button class="btn-main btn-acc" id="btn-gen">
         <span id="bico">▶</span>
         <span id="btxt">GENERAR AUDIO</span>
       </button>
-      <button id="btn-dl">⬇ DESCARGAR .WAV</button>
+      <button class="btn-main btn-dl" id="btn-dl">⬇ DESCARGAR .WAV</button>
     </div>
 
-    <div id="audio-wrap">
+    <div id="audio-wrap" style="display:none">
       <audio id="player" controls></audio>
     </div>
 
-    <div class="info">
-      <div class="eng">META MMS-TTS <span class="badge">público · sin login</span></div>
-      Massively Multilingual Speech · 1100+ idiomas<br/>
-      Backend: <strong style="color:var(--txt)">WebAssembly</strong> (sin WebGPU)<br/>
-      Tamaño: ~35 MB por idioma, cacheado en IndexedDB<br/>
-      Estado: <span id="est" style="color:var(--txt)">IDLE</span>
-    </div>
-
   </div>
+
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0;line-height:1.7">
+    Todo el procesamiento ocurre en tu dispositivo. Tu texto nunca sale del navegador.
+  </div>
+
 </div>
 
+<!-- ── Script principal ──────────────────────────────────────── -->
 <script type="module">
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
 
-// Sin autenticación, sin WebGPU
 env.allowLocalModels = false;
 env.useBrowserCache  = true;
 
-// ── WAV encoder Float32 → PCM 16-bit ──────────────────────
+// ── WAV encoder ───────────────────────────────────────────
 function encodeWAV(samples, sr) {
-  const buf  = new ArrayBuffer(44 + samples.length * 2);
-  const dv   = new DataView(buf);
-  const wstr = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o+i, s.charCodeAt(i)); };
-  wstr(0,'RIFF'); dv.setUint32(4, 36 + samples.length*2, true);
-  wstr(8,'WAVE'); wstr(12,'fmt ');
+  const buf = new ArrayBuffer(44 + samples.length * 2);
+  const dv  = new DataView(buf);
+  const ws  = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o+i, s.charCodeAt(i)); };
+  ws(0,'RIFF'); dv.setUint32(4, 36+samples.length*2, true);
+  ws(8,'WAVE'); ws(12,'fmt ');
   dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
   dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true);
   dv.setUint16(32,2,true);  dv.setUint16(34,16,true);
-  wstr(36,'data'); dv.setUint32(40, samples.length*2, true);
+  ws(36,'data'); dv.setUint32(40, samples.length*2, true);
   for (let i = 0; i < samples.length; i++) {
     const s = Math.max(-1, Math.min(1, samples[i]));
-    dv.setInt16(44 + i*2, s * 0x7FFF, true);
+    dv.setInt16(44+i*2, s*0x7FFF, true);
   }
   return buf;
 }
 
-// ── DOM ────────────────────────────────────────────────────
-const txt      = document.getElementById('txt');
-const langSel  = document.getElementById('lang-sel');
-const btnGen   = document.getElementById('btn-gen');
-const btnDl    = document.getElementById('btn-dl');
-const bico     = document.getElementById('bico');
-const btxt     = document.getElementById('btxt');
-const progEl   = document.getElementById('prog');
-const progLbl  = document.getElementById('prog-lbl');
-const progPct  = document.getElementById('prog-pct');
-const progFill = document.getElementById('prog-fill');
-const errEl    = document.getElementById('err');
-const audioWrap= document.getElementById('audio-wrap');
-const player   = document.getElementById('player');
-const estEl    = document.getElementById('est');
-const sw = document.getElementById('sw');
-const sc = document.getElementById('sc');
-const se = document.getElementById('se');
+// ── DOM refs ─────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const txt       = $('txt');
+const mmsLang   = $('mms-lang');
+const kokoroVoice = $('kokoro-voice');
+const btnGen    = $('btn-gen');
+const btnDl     = $('btn-dl');
+const bico      = $('bico');
+const btxt      = $('btxt');
+const progEl    = $('prog');
+const progLbl   = $('prog-lbl');
+const progPct   = $('prog-pct');
+const progFill  = $('prog-fill');
+const errEl     = $('err');
+const audioWrap = $('audio-wrap');
+const player    = $('player');
+const sw = $('sw'), sc = $('sc'), se = $('se');
 
-// ── Estadísticas ───────────────────────────────────────────
-function stats() {
+// Token elements
+const hfInput    = $('hf-token-input');
+const btnApply   = $('btn-apply-token');
+const btnClear   = $('btn-clear-token');
+const hfCard     = $('hf-card');
+const hfHint     = $('hf-hint');
+const hfStatus   = $('hf-status');
+const hfHeaderTxt= $('hf-header-txt');
+const lockIcon   = $('lock-icon');
+const tabKokoro  = $('tab-kokoro');
+
+// ── Estado ────────────────────────────────────────────────
+let currentEngine = 'mms';   // 'mms' | 'kokoro'
+let hfToken = localStorage.getItem('hf_token') || '';
+let pipes   = {};
+let audioUrl = null;
+
+// ── Token: restaurar si guardado ─────────────────────────
+if (hfToken) applyToken(hfToken, false);
+
+// ── Estadísticas ─────────────────────────────────────────
+function updateStats() {
   const t = txt.value;
   const w = t.trim() ? t.trim().split(/\s+/).length : 0;
   const c = t.length;
@@ -199,112 +356,115 @@ function stats() {
   sc.textContent = `${c} caracteres`;
   se.textContent = s < 60 ? `~${s}s est.` : `~${Math.round(s/60)}min est.`;
 }
-txt.addEventListener('input', stats);
-stats();
+txt.addEventListener('input', updateStats);
+updateStats();
 
-// ── Pipeline cache (por modelo) ────────────────────────────
-const pipes = {};
-let audioUrl = null;
+// ── Token helpers ─────────────────────────────────────────
+function applyToken(token, save = true) {
+  if (!token || !token.startsWith('hf_')) {
+    showHfStatus('error', '⚠ El token debe empezar con "hf_"');
+    return false;
+  }
+  hfToken = token;
+  env.hubAccessToken = token;
+  if (save) localStorage.setItem('hf_token', token);
 
-// ── Helpers ────────────────────────────────────────────────
-const setEst  = (s) => estEl.textContent = s.toUpperCase();
-const showErr = (m) => { errEl.style.display='block'; errEl.innerHTML=`⚠ <strong>Error:</strong> ${m}`; };
-const hideErr = () => { errEl.style.display='none'; errEl.textContent=''; };
-const setProg = (lbl, pct) => {
-  progEl.classList.add('show');
-  progLbl.textContent = lbl;
-  progPct.textContent = `${pct}%`;
-  progFill.style.width = `${pct}%`;
-};
-const hideProg = () => progEl.classList.remove('show');
+  // UI unlock
+  hfCard.classList.add('unlocked');
+  lockIcon.textContent  = '🔓';
+  hfHeaderTxt.textContent = 'HuggingFace Token — Kokoro desbloqueado';
+  hfInput.classList.add('valid');
+  hfInput.value = token;
+  hfHint.style.display    = 'none';
+  btnApply.style.display  = 'none';
+  btnClear.style.display  = 'flex';
+  hfStatus.style.display  = 'flex';
+  tabKokoro.classList.remove('locked');
 
-// ── Cambio de modelo: limpiar audio previo ─────────────────
-langSel.addEventListener('change', () => {
+  showHfStatus('ok', '✓ Token activo — Kokoro disponible');
+  return true;
+}
+
+function clearToken() {
+  hfToken = '';
+  env.hubAccessToken = undefined;
+  localStorage.removeItem('hf_token');
+  pipes['kokoro'] = null;
+
+  hfCard.classList.remove('unlocked');
+  lockIcon.textContent  = '🔒';
+  hfHeaderTxt.textContent = 'HuggingFace Token — Desbloquear voces IA (Kokoro)';
+  hfInput.classList.remove('valid');
+  hfInput.value = '';
+  hfHint.style.display    = 'block';
+  btnApply.style.display  = 'flex';
+  btnClear.style.display  = 'none';
+  hfStatus.style.display  = 'none';
+  tabKokoro.classList.add('locked');
+
+  if (currentEngine === 'kokoro') switchEngine('mms');
+}
+
+function showHfStatus(type, msg) {
+  hfStatus.style.display = 'flex';
+  const color = type === 'ok' ? 'var(--grn)' : '#f87171';
+  hfStatus.innerHTML = `<span style="color:${color}">${msg}</span>`;
+}
+
+btnApply.addEventListener('click', () => applyToken(hfInput.value.trim()));
+btnClear.addEventListener('click', clearToken);
+hfInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyToken(hfInput.value.trim()); });
+
+// ── Engine switcher ───────────────────────────────────────
+window.switchEngine = function(eng) {
+  if (eng === 'kokoro' && !hfToken) return;
+  currentEngine = eng;
+
+  $('tab-mms').className    = 'eng-tab' + (eng==='mms' ? ' active-mms' : '');
+  $('tab-kokoro').className = 'eng-tab' + (eng==='kokoro' ? ' active-kokoro' : '') + (hfToken ? '' : ' locked');
+  $('panel-mms').className    = 'eng-panel' + (eng==='mms' ? ' show' : '');
+  $('panel-kokoro').className = 'eng-panel' + (eng==='kokoro' ? ' show' : '');
+
+  // Reset output
   btnDl.style.display  = 'none';
   audioWrap.style.display = 'none';
   hideErr(); hideProg();
-  setEst('idle');
-});
+  btxt.textContent = 'GENERAR AUDIO';
+  bico.textContent = '▶';
+};
 
-// ── Generar ────────────────────────────────────────────────
+// ── UI helpers ────────────────────────────────────────────
+const showErr  = (m) => { errEl.style.display='block'; errEl.innerHTML=`⚠ <strong>Error:</strong> ${m}<br/><small style="opacity:.65">Abre la consola (F12) para detalles.</small>`; };
+const hideErr  = () => { errEl.style.display='none'; errEl.textContent=''; };
+const setProg  = (lbl, pct) => { progEl.classList.add('show'); progLbl.textContent=lbl; progPct.textContent=`${pct}%`; progFill.style.width=`${pct}%`; };
+const hideProg = () => progEl.classList.remove('show');
+const onProgress = (p) => {
+  if (p.status==='progress') {
+    const pct  = Math.round(p.progress||0);
+    const file = (p.file||'').split('/').pop() || 'Archivo';
+    setProg(`${file} — ${pct}%`, pct);
+  }
+  if (p.status==='done') setProg('Modelo listo ✓', 100);
+};
+
+// ── Generar ───────────────────────────────────────────────
 btnGen.addEventListener('click', async () => {
-  const text  = txt.value.trim();
-  const model = langSel.value;
+  const text = txt.value.trim();
   if (!text) return;
 
   hideErr();
   btnGen.disabled = true;
-  btnDl.style.display = 'none';
+  btnDl.style.display     = 'none';
   audioWrap.style.display = 'none';
   btxt.textContent = 'CARGANDO…';
   bico.innerHTML   = '<span class="spin"></span>';
 
   try {
-    // Cargar pipeline si no está en caché
-    if (!pipes[model]) {
-      setEst('loading');
-      const modelName = model.split('/').pop().toUpperCase();
-      setProg(`Descargando ${modelName} (~35 MB)…`, 0);
+    let pipe;
 
-      pipes[model] = await pipeline(
-        'text-to-speech',
-        model,
-        {
-          dtype: 'fp32',
-          device: 'wasm',          // ← forzar WebAssembly, sin WebGPU
-          progress_callback: (p) => {
-            if (p.status === 'progress') {
-              const pct  = Math.round(p.progress || 0);
-              const file = (p.file || '').split('/').pop() || 'Archivo';
-              setProg(`${file} — ${pct}%`, pct);
-            }
-            if (p.status === 'done') setProg('Modelo listo ✓', 100);
-          }
-        }
-      );
-    }
-
-    // Sintetizar
-    setEst('synth');
-    btxt.textContent = 'SINTETIZANDO…';
-    setProg('Generando audio…', 60);
-
-    const result  = await pipes[model](text);
-    const samples = result.audio instanceof Float32Array
-      ? result.audio
-      : new Float32Array(result.audio.data || result.audio);
-
-    const wav  = encodeWAV(samples, result.sampling_rate);
-    const blob = new Blob([wav], { type: 'audio/wav' });
-
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-    audioUrl = URL.createObjectURL(blob);
-
-    player.src = audioUrl;
-    audioWrap.style.display = 'block';
-
-    btnDl.style.display = 'flex';
-    btnDl.onclick = () => {
-      const a = document.createElement('a');
-      a.href = audioUrl; a.download = 'textovox.wav'; a.click();
-    };
-
-    setEst('done ✓');
-    setProg('Audio listo ✓', 100);
-    btxt.textContent = 'GENERAR DE NUEVO';
-    bico.textContent = '▶';
-
-  } catch (err) {
-    console.error('[TextoVox]', err);
-    showErr(err.message || String(err));
-    setEst('error');
-    hideProg();
-    btxt.textContent = 'REINTENTAR';
-    bico.textContent = '▶';
-  }
-
-  btnGen.disabled = false;
-});
-</script>
-</body>
-</html>
+    if (currentEngine === 'mms') {
+      // ── MMS-TTS ──
+      const model = mmsLang.value;
+      if (!pipes[model]) {
+        const name = model.split('-').pop().toUpperCase();
+        setProg(`D
