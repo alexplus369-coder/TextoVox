@@ -108,7 +108,6 @@
       <button class="eng-tab" id="tab-kok" onclick="switchEng('kok')">★ Kokoro IA</button>
     </div>
 
-    <!-- MMS panel -->
     <div class="panel show" id="panel-mms">
       <div>
         <span class="flbl">Idioma (1 voz por idioma)</span>
@@ -134,7 +133,6 @@
       </div>
     </div>
 
-    <!-- Kokoro panel -->
     <div class="panel" id="panel-kok">
       <div>
         <span class="flbl">Voz</span>
@@ -199,8 +197,8 @@
 // ── MMS-TTS usa @huggingface/transformers (pipeline genérico) ──
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
 
-// ── Kokoro usa su propia librería kokoro-js ──
-import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.mjs';
+// ── Kokoro usa su propia librería kokoro-js (USANDO RUTA ESM CORRECTA) ──
+import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm';
 
 env.allowLocalModels = false;
 env.useBrowserCache  = true;
@@ -314,9 +312,9 @@ btnGen.addEventListener('click', async () => {
       if (!kokoroPipe) {
         setProg('Descargando Kokoro (~80 MB)…', 0);
 
-        // kokoro-js carga el modelo con progress integrado
+        // ACTUALIZACIÓN DE MODELO: Kokoro-82M-v1.0-ONNX es la nueva ruta obligatoria
         kokoroPipe = await KokoroTTS.from_pretrained(
-          'onnx-community/Kokoro-82M-ONNX',
+          'onnx-community/Kokoro-82M-v1.0-ONNX',
           {
             dtype: 'q8',
             device: 'wasm',
@@ -336,7 +334,7 @@ btnGen.addEventListener('click', async () => {
 
       const voice  = kokVoice.value;
       const audio  = await kokoroPipe.generate(text, { voice });
-      // kokoro-js devuelve un objeto RawAudio con .audio (Float32Array) y .sampling_rate
+      
       samples    = audio.audio instanceof Float32Array ? audio.audio : new Float32Array(audio.audio);
       sampleRate = audio.sampling_rate || 24000;
     }
