@@ -26,18 +26,6 @@
     .txt-area{width:100%;height:240px;background:transparent;border:1px solid var(--border);border-radius:10px;
       padding:16px;color:var(--text);font-family:var(--serif);font-size:16px;line-height:1.8;resize:none;outline:none;transition:border-color .2s}
     .txt-area:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
-    .playback-view{width:100%;height:240px;border:1px solid var(--accent);border-radius:10px;padding:16px;
-      font-family:var(--serif);font-size:16px;line-height:1.8;overflow-y:auto;white-space:pre-wrap;word-break:break-word;
-      background:rgba(217,119,6,.04);box-shadow:0 0 0 2px var(--accent-dim)}
-    .playback-view mark{background:var(--accent-glow);color:#fbbf24;border-radius:3px;padding:1px 3px}
-    .playback-view::-webkit-scrollbar{width:4px}
-    .playback-view::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-    .tab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-      padding:8px 18px;border:none;cursor:pointer;background:transparent;color:var(--muted);
-      border-bottom:2px solid transparent;transition:all .15s}
-    .tab:hover{color:var(--text)}
-    .tab.ta{color:var(--accent);border-bottom-color:var(--accent)}
-    .tab.tg{color:var(--green);border-bottom-color:var(--green)}
     .btn{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.06em;border:none;
       border-radius:8px;padding:10px 20px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
     .btn-a{background:var(--accent);color:#000}
@@ -45,53 +33,37 @@
     .btn-a:disabled{background:#333;color:var(--muted);cursor:not-allowed;box-shadow:none}
     .btn-g{background:var(--green);color:#000}
     .btn-g:hover{background:#16a34a;box-shadow:0 0 18px var(--green-dim)}
-    .btn-g:disabled{background:#333;color:var(--muted);cursor:not-allowed;box-shadow:none}
-    .ghost{font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:transparent;color:var(--muted);
-      border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;
-      transition:all .15s;display:flex;align-items:center;gap:6px}
-    .ghost:hover{color:var(--text);border-color:var(--muted)}
-    .icn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);
-      padding:5px 10px;cursor:pointer;font-size:11px;font-family:var(--mono);
-      transition:all .15s;display:flex;align-items:center;gap:5px}
-    .icn:hover{color:var(--text);border-color:var(--muted)}
-    .sld{-webkit-appearance:none;width:100%;height:3px;background:var(--border);border-radius:3px;outline:none}
-    .sld.sa::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
-      background:var(--accent);cursor:pointer;box-shadow:0 0 8px var(--accent-glow)}
-    .sld.sg::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
-      background:var(--green);cursor:pointer;box-shadow:0 0 8px var(--green-dim)}
     .badge{font-family:var(--mono);font-size:11px;background:var(--accent-dim);color:var(--accent);
       border:1px solid rgba(217,119,6,.3);border-radius:4px;padding:2px 7px}
     .badge.g{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,.3)}
-    .hr{border:none;border-top:1px solid var(--border)}
     .toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);
       color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:8px;
       z-index:1000;animation:fu .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5)}
     @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .bar{background:var(--accent);border-radius:3px;width:3px;animation: w1 0.6s infinite alternate;}
-    @keyframes w1{from{height:4px}to{height:20px}}
   </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script type="module">
-  // Actualizado a la versión 3.7.1 para máxima estabilidad
+  // Usamos la versión 3.7.1 que es compatible con la nueva arquitectura de tensores
   import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.1';
   env.allowLocalModels = false;
   env.useBrowserCache  = true;
-  
+
   let pipe = null;
 
   window.__tts = {
     loaded: false,
     loading: false,
-    
+
     async load(onProgress) {
       if (pipe) return;
       this.loading = true;
+      // dtype fp32 es más pesado pero garantiza que el audio se genere sin ruidos
       pipe = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
-        dtype: 'q8',
+        dtype: 'fp32',
         device: 'auto',
         progress_callback: onProgress
       });
@@ -101,7 +73,6 @@
 
     async synth(text) {
       if (!pipe) throw new Error('Modelo no cargado');
-      // Perfil de voz requerido para SpeechT5
       const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
       return await pipe(text, { speaker_embeddings });
     }
@@ -126,26 +97,13 @@
 </script>
 
 <script type="text/babel">
-  const { useState, useEffect, useRef, useCallback } = React;
+  const { useState, useRef } = React;
 
-  const ICopy  = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>;
-  const IClear = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>;
   const IDown  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z"/></svg>;
   const ISpin  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 11-6-8.5"/></svg>;
 
-  const Slider = ({label, value, min, max, step, onChange, display, green}) => (
-    <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <span style={{fontSize:'10px',letterSpacing:'.1em',textTransform:'uppercase',color:'var(--muted)'}}>{label}</span>
-        <span className={`badge${green?' g':''}`}>{display}</span>
-      </div>
-      <input type="range" className={`sld ${green?'sg':'sa'}`} min={min} max={max} step={step}
-        value={value} onChange={e=>onChange(parseFloat(e.target.value))}/>
-    </div>
-  );
-
   function App() {
-    const [text, setText] = useState('Hola. Escribe aquí el texto que deseas escuchar.');
+    const [text, setText] = useState('Hola. Ya puedo hablar correctamente.');
     const [kSt, setKSt] = useState('idle');
     const [kProg, setKProg] = useState({pct:0,label:''});
     const [kBlob, setKBlob] = useState(null);
@@ -161,18 +119,24 @@
         const tts = window.__tts;
         if (!tts.loaded) {
           await tts.load(p => {
-            if (p.status==='progress') setKProg({pct:Math.round(p.progress), label:`Cargando ${Math.round(p.progress)}%`});
+            if (p.status==='progress') setKProg({pct:Math.round(p.progress||0), label:`Cargando ${Math.round(p.progress||0)}%`});
           });
         }
         setKSt('synth');
         const result = await tts.synth(text);
-        const wav = window.__encodeWAV(result.audio, result.sampling_rate);
+        
+        // CORRECCIÓN CRÍTICA: Extraer .data del Tensor para que el audio no sea mudo
+        const audioData = result.audio.data || result.audio;
+        
+        const wav = window.__encodeWAV(audioData, result.sampling_rate);
         const blob = new Blob([wav], {type:'audio/wav'});
         setKBlob(blob);
+        if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
         audioUrlRef.current = URL.createObjectURL(blob);
         setKSt('done');
         showToast('✓ Audio generado');
       } catch(e) {
+        console.error(e);
         setKSt('idle');
         showToast('⚠ Error: ' + e.message);
       }
@@ -189,23 +153,22 @@
       <div style={{maxWidth:'800px',margin:'40px auto',padding:'20px'}}>
         <div className="card" style={{padding:'24px'}}>
           <h1 style={{fontSize:'20px',fontWeight:'700',marginBottom:'20px'}}>Texto<span style={{color:'var(--accent)'}}>Vox</span></h1>
-          
+
           <textarea className="txt-area" value={text} onChange={e=>setText(e.target.value)} placeholder="Escribe aquí..."/>
-          
+
           <div style={{marginTop:'20px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
             <div style={{display:'flex',flexDirection:'column',gap:'15px'}}>
                <button className="btn btn-a" onClick={handleGenerate} disabled={kSt==='loading' || kSt==='synth'}>
                 {kSt==='loading' || kSt==='synth' ? <ISpin/> : null}
-                {kSt==='loading' ? 'Cargando IA...' : kSt==='synth' ? 'Sintetizando...' : 'Generar Audio'}
+                {kSt==='loading' ? kProg.label : kSt==='synth' ? 'Sintetizando...' : 'Generar Audio'}
               </button>
               {kBlob && <button className="btn btn-g" onClick={handleDownload}><IDown/> Descargar .WAV</button>}
             </div>
 
             <div style={{background:'var(--surface2)',padding:'16px',borderRadius:'10px'}}>
               <div style={{fontSize:'11px',color:'var(--muted)',lineHeight:'1.8'}}>
-                <span style={{color:'var(--green)'}}>SPEECHT5 TTS</span> — modelo neuronal.<br/>
-                Descarga ~130 MB la primera vez.<br/>
-                {/* CORRECCIÓN: Etiqueta strong cerrada correctamente con > */}
+                <span style={{color:'var(--green)'}}>SPEECHT5 TTS</span> — motor de IA.<br/>
+                Estado: <span style={{color:'var(--text)'}}>{kSt.toUpperCase()}</span><br/>
                 Genera un archivo <strong style={{color:'var(--text)'}}>.wav</strong> real, listo para usar.
               </div>
             </div>
@@ -221,4 +184,3 @@
 </script>
 </body>
 </html>
-
