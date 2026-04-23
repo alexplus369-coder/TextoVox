@@ -10,7 +10,6 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
-    /* Mismo CSS sin cambios */
     :root {
       --bg:#0c0c10; --surface:#13131a; --surface2:#1a1a24; --border:#2a2a35;
       --accent:#d97706; --accent-dim:rgba(217,119,6,0.14); --accent-glow:rgba(217,119,6,0.35);
@@ -47,15 +46,10 @@
     .btn-g{background:var(--green);color:#000}
     .btn-g:hover{background:#16a34a;box-shadow:0 0 18px var(--green-dim)}
     .btn-g:disabled{background:#333;color:var(--muted);cursor:not-allowed;box-shadow:none}
-    .btn-gd{background:#166534;color:#4ade80}
-    .btn-gd:hover{background:#14532d}
     .ghost{font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:transparent;color:var(--muted);
       border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;
       transition:all .15s;display:flex;align-items:center;gap:6px}
     .ghost:hover{color:var(--text);border-color:var(--muted)}
-    .ghost.dng:hover{color:#f87171;border-color:#f87171}
-    .ghost.act{color:#fbbf24;border-color:var(--accent)}
-    .ghost:disabled{opacity:.3;cursor:not-allowed}
     .icn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);
       padding:5px 10px;cursor:pointer;font-size:11px;font-family:var(--mono);
       transition:all .15s;display:flex;align-items:center;gap:5px}
@@ -65,45 +59,25 @@
       background:var(--accent);cursor:pointer;box-shadow:0 0 8px var(--accent-glow)}
     .sld.sg::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
       background:var(--green);cursor:pointer;box-shadow:0 0 8px var(--green-dim)}
-    .sld::-moz-range-thumb{width:13px;height:13px;border-radius:50%;border:none;background:var(--accent);cursor:pointer}
-    .vsel{width:100%;background:#0f0f14;border:1px solid var(--border);color:var(--text);
-      font-family:var(--mono);font-size:11px;padding:8px 10px;border-radius:8px;outline:none;cursor:pointer}
-    .vsel:focus{border-color:var(--accent)}
-    .vsel.gf:focus{border-color:var(--green)}
-    .pbw{width:100%;height:4px;background:var(--border);border-radius:4px;overflow:hidden}
-    .pbf{height:100%;border-radius:4px;transition:width .3s ease}
-    @keyframes w1{0%,100%{height:4px}50%{height:18px}}
-    @keyframes w2{0%,100%{height:7px}50%{height:26px}}
-    @keyframes w3{0%,100%{height:10px}50%{height:32px}}
-    @keyframes w4{0%,100%{height:5px}50%{height:22px}}
-    .bar{background:var(--accent);border-radius:3px;width:3px;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
-    .b1{animation:w1 .6s;animation-delay:0ms}.b2{animation:w2 .6s;animation-delay:80ms}
-    .b3{animation:w3 .5s;animation-delay:160ms}.b4{animation:w4 .7s;animation-delay:240ms}
-    .b5{animation:w2 .55s;animation-delay:320ms}.b6{animation:w1 .65s;animation-delay:400ms}
-    .b7{animation:w3 .5s;animation-delay:480ms}.b8{animation:w4 .7s;animation-delay:560ms}
-    .b9{animation:w2 .6s;animation-delay:640ms}.b10{animation:w1 .55s;animation-delay:720ms}
-    .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
     .badge{font-family:var(--mono);font-size:11px;background:var(--accent-dim);color:var(--accent);
       border:1px solid rgba(217,119,6,.3);border-radius:4px;padding:2px 7px}
     .badge.g{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,.3)}
     .hr{border:none;border-top:1px solid var(--border)}
-    @keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
-    .dot{width:7px;height:7px;border-radius:50%;animation:pd 1.2s infinite}
-    .da{background:#fbbf24}.dg{background:var(--green)}
     .toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);
       color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:8px;
       z-index:1000;animation:fu .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5)}
     @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    .hline{height:2px;background:linear-gradient(90deg,var(--accent),transparent);border-radius:1px}
     @keyframes spin{to{transform:rotate(360deg)}}
+    .bar{background:var(--accent);border-radius:3px;width:3px;animation: w1 0.6s infinite alternate;}
+    @keyframes w1{from{height:4px}to{height:20px}}
   </style>
 </head>
 <body>
 <div id="root"></div>
 
-<!-- TTS Module con SpeechT5 (voz única predeterminada) -->
 <script type="module">
-  import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0';
+  // Actualizado a la versión 3.7.1 para máxima estabilidad
+  import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.1';
   env.allowLocalModels = false;
   env.useBrowserCache  = true;
   
@@ -118,6 +92,7 @@
       this.loading = true;
       pipe = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
         dtype: 'q8',
+        device: 'auto',
         progress_callback: onProgress
       });
       this.loaded = true;
@@ -125,17 +100,12 @@
     },
 
     async synth(text) {
-  if (!pipe) throw new Error('Modelo no cargado');
-  
-  // SpeechT5 REQUIERE un perfil de voz (embeddings)
-  const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
-  
-  const result = await pipe(text, { 
-    speaker_embeddings 
-  });
-  
-  return result; // { audio: Float32Array, sampling_rate: number }
-}
+      if (!pipe) throw new Error('Modelo no cargado');
+      // Perfil de voz requerido para SpeechT5
+      const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
+      return await pipe(text, { speaker_embeddings });
+    }
+  };
 
   window.__encodeWAV = function(samples, sr) {
     const buf = new ArrayBuffer(44 + samples.length * 2);
@@ -158,28 +128,15 @@
 <script type="text/babel">
   const { useState, useEffect, useRef, useCallback } = React;
 
-  // Iconos SVG
-  const IPlay  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>;
-  const IPause = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
-  const IStop  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>;
-  const IDown  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z"/></svg>;
   const ICopy  = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>;
   const IClear = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>;
-  const IEdit  = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
+  const IDown  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z"/></svg>;
   const ISpin  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 11-6-8.5"/></svg>;
-  const IStar  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>;
-
-  const Waveform = ({on}) => on ? (
-    <div style={{display:'flex',alignItems:'center',gap:'3px',height:'32px'}}>
-      {[...Array(10)].map((_,i)=><div key={i} className={`bar b${i+1}`} style={{height:'4px'}}/>)}
-      <span style={{marginLeft:'10px',fontSize:'10px',color:'var(--accent)',letterSpacing:'.1em'}}>SINTETIZANDO</span>
-    </div>
-  ) : null;
 
   const Slider = ({label, value, min, max, step, onChange, display, green}) => (
     <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <span className="lbl">{label}</span>
+        <span style={{fontSize:'10px',letterSpacing:'.1em',textTransform:'uppercase',color:'var(--muted)'}}>{label}</span>
         <span className={`badge${green?' g':''}`}>{display}</span>
       </div>
       <input type="range" className={`sld ${green?'sg':'sa'}`} min={min} max={max} step={step}
@@ -188,305 +145,80 @@
   );
 
   function App() {
-    const DEFAULT_TEXT = 'Hola. Escribe aquí el texto que deseas escuchar.\n\nEsta herramienta funciona sin internet, sin cuentas y sin enviar ningún dato a servidores externos.';
-    const [text, setText]   = useState(DEFAULT_TEXT);
-    const [tab,  setTab]    = useState('preview');
-    const [toast,setToast]  = useState('');
-
-    const [voices,    setVoices]    = useState([]);
-    const [voiceIdx,  setVoiceIdx]  = useState(0);
-    const [langFilt,  setLangFilt]  = useState('es');
-    const [rate,   setRate]   = useState(1.0);
-    const [pitch,  setPitch]  = useState(1.0);
-    const [volume, setVolume] = useState(1.0);
-    const [pSt,  setPSt]  = useState('idle');
-    const [hlR,  setHlR]  = useState(null);
-    const synth = useRef(window.speechSynthesis);
-
-    const [kSt,    setKSt]   = useState('idle');
-    const [kProg,  setKProg] = useState({pct:0,label:''});
-    const [kBlob,  setKBlob] = useState(null);
-    const [kRate,  setKRate] = useState(1.0);
+    const [text, setText] = useState('Hola. Escribe aquí el texto que deseas escuchar.');
+    const [kSt, setKSt] = useState('idle');
+    const [kProg, setKProg] = useState({pct:0,label:''});
+    const [kBlob, setKBlob] = useState(null);
+    const [toast, setToast] = useState('');
     const audioUrlRef = useRef(null);
 
-    useEffect(() => {
-      const load = () => {
-        const v = synth.current.getVoices();
-        if (!v.length) return;
-        setVoices(v);
-        const i = v.findIndex(x=>x.lang.startsWith('es'));
-        setVoiceIdx(i>=0?i:0);
-      };
-      load();
-      synth.current.onvoiceschanged = load;
-    }, []);
-
-    useEffect(() => {
-      const id = setInterval(()=>{
-        if (!synth.current.speaking && !synth.current.paused && pSt!=='idle') {
-          setPSt('idle'); setHlR(null);
-        }
-      }, 200);
-      return ()=>clearInterval(id);
-    }, [pSt]);
-
-    const filtV = langFilt==='all' ? voices : voices.filter(v=>v.lang.toLowerCase().startsWith(langFilt));
-    const langs = ['all',...new Set(voices.map(v=>v.lang.split('-')[0].toLowerCase()))].sort();
-
-    const showToast = (m) => { setToast(m); setTimeout(()=>setToast(''), 2600); };
-
-    const handlePlay = useCallback(()=>{
-      if (!text.trim()) return;
-      if (pSt==='paused') { synth.current.resume(); setPSt('speaking'); return; }
-      synth.current.cancel(); setHlR(null);
-      const utt = new SpeechSynthesisUtterance(text);
-      const vv = filtV[voiceIdx] || voices[0];
-      if (vv) utt.voice = vv;
-      utt.rate=rate; utt.pitch=pitch; utt.volume=volume;
-      utt.onboundary = e => { if(e.name==='word') setHlR({start:e.charIndex,end:e.charIndex+(e.charLength||0)}); };
-      utt.onend  = ()=>{ setPSt('idle'); setHlR(null); };
-      utt.onerror= ()=>{ setPSt('idle'); setHlR(null); };
-      synth.current.speak(utt);
-      setPSt('speaking');
-    }, [text,pSt,filtV,voiceIdx,voices,rate,pitch,volume]);
-
-    const handlePause = useCallback(()=>{
-      if (pSt==='speaking') { synth.current.pause(); setPSt('paused'); }
-      else if (pSt==='paused') { synth.current.resume(); setPSt('speaking'); }
-    }, [pSt]);
-
-    const handleStop = useCallback(()=>{
-      synth.current.cancel(); setPSt('idle'); setHlR(null);
-    }, []);
-
-    useEffect(()=>{
-      const h = e => {
-        if (['TEXTAREA','INPUT','SELECT'].includes(e.target.tagName)) return;
-        if (e.code==='Space') { e.preventDefault(); pSt==='idle'?handlePlay():handlePause(); }
-        if (e.code==='Escape') handleStop();
-      };
-      window.addEventListener('keydown',h);
-      return ()=>window.removeEventListener('keydown',h);
-    }, [pSt,handlePlay,handlePause,handleStop]);
+    const showToast = (m) => { setToast(m); setTimeout(()=>setToast(''), 3000); };
 
     const handleGenerate = async () => {
       if (!text.trim()) return;
-      if (audioUrlRef.current) { URL.revokeObjectURL(audioUrlRef.current); audioUrlRef.current=null; }
-      setKBlob(null);
-      const tts = window.__tts;
-      if (!tts) { showToast('⚠ Módulo TTS no disponible'); return; }
+      setKSt('loading');
       try {
+        const tts = window.__tts;
         if (!tts.loaded) {
-          setKSt('loading');
-          setKProg({pct:0,label:'Descargando modelo SpeechT5 (~130 MB)…'});
           await tts.load(p => {
-            if (p.status==='progress') {
-              const pct = Math.round(p.progress||0);
-              setKProg({pct, label:`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`});
-            }
-            if (p.status==='done') setKProg({pct:100,label:'Modelo listo ✓'});
+            if (p.status==='progress') setKProg({pct:Math.round(p.progress), label:`Cargando ${Math.round(p.progress)}%`});
           });
         }
         setKSt('synth');
-        setKProg({pct:0,label:'Generando audio con IA…'});
         const result = await tts.synth(text);
-        const wav  = window.__encodeWAV(result.audio, result.sampling_rate);
+        const wav = window.__encodeWAV(result.audio, result.sampling_rate);
         const blob = new Blob([wav], {type:'audio/wav'});
-        const url  = URL.createObjectURL(blob);
-        audioUrlRef.current = url;
         setKBlob(blob);
+        audioUrlRef.current = URL.createObjectURL(blob);
         setKSt('done');
-        setKProg({pct:100,label:'Audio listo ✓'});
-        showToast('✓ Audio generado y listo para descargar');
-      } catch(err) {
-        console.error(err);
+        showToast('✓ Audio generado');
+      } catch(e) {
         setKSt('idle');
-        showToast('⚠ Error: ' + err.message);
+        showToast('⚠ Error: ' + e.message);
       }
     };
 
-    const handleDownloadWav = () => {
-      if (!audioUrlRef.current) return;
+    const handleDownload = () => {
       const a = document.createElement('a');
       a.href = audioUrlRef.current;
       a.download = 'textovox.wav';
       a.click();
     };
 
-    const renderHL = () => {
-      if (!hlR) return text;
-      const {start,end} = hlR;
-      const frags = s => s.split('\n').map((l,i,a)=><React.Fragment key={i}>{l}{i<a.length-1&&<br/>}</React.Fragment>);
-      return <>{frags(text.slice(0,start))}<mark>{text.slice(start,end)}</mark>{frags(text.slice(end))}</>;
-    };
-
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const estS  = Math.round(words/(rate*2.5));
-    const est   = estS<60 ? `~${estS}s` : `~${Math.round(estS/60)}min`;
-    const pOn   = pSt!=='idle';
-    const kBusy = kSt==='loading'||kSt==='synth';
-
     return (
-      <div style={{maxWidth:'980px',margin:'0 auto',padding:'32px 16px',fontFamily:'var(--mono)'}}>
-        <div style={{marginBottom:'24px'}}>
-          <div className="hline" style={{width:'40px',marginBottom:'14px'}}/>
-          <div style={{display:'flex',alignItems:'baseline',gap:'12px',flexWrap:'wrap'}}>
-            <h1 style={{fontSize:'24px',fontWeight:'700',letterSpacing:'-.02em'}}>
-              Texto<span style={{color:'var(--accent)'}}>Vox</span>
-            </h1>
-            <span style={{fontSize:'10px',color:'var(--muted)',letterSpacing:'.12em',textTransform:'uppercase'}}>
-              offline · privado · sin límites
-            </span>
-          </div>
-        </div>
-
-        <div style={{display:'grid',gridTemplateColumns:'1fr 290px',gap:'14px'}}>
-          <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <span className="lbl">Texto</span>
-              <div style={{display:'flex',gap:'6px'}}>
-                <button className="icn" onClick={()=>navigator.clipboard.writeText(text).then(()=>showToast('✓ Copiado'))}><ICopy/> Copiar</button>
-                {pOn
-                  ? <button className="icn" onClick={handleStop}><IEdit/> Editar</button>
-                  : <button className="icn" onClick={()=>setText('')} style={{opacity:text?1:.3}}><IClear/> Limpiar</button>
-                }
-              </div>
+      <div style={{maxWidth:'800px',margin:'40px auto',padding:'20px'}}>
+        <div className="card" style={{padding:'24px'}}>
+          <h1 style={{fontSize:'20px',fontWeight:'700',marginBottom:'20px'}}>Texto<span style={{color:'var(--accent)'}}>Vox</span></h1>
+          
+          <textarea className="txt-area" value={text} onChange={e=>setText(e.target.value)} placeholder="Escribe aquí..."/>
+          
+          <div style={{marginTop:'20px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:'15px'}}>
+               <button className="btn btn-a" onClick={handleGenerate} disabled={kSt==='loading' || kSt==='synth'}>
+                {kSt==='loading' || kSt==='synth' ? <ISpin/> : null}
+                {kSt==='loading' ? 'Cargando IA...' : kSt==='synth' ? 'Sintetizando...' : 'Generar Audio'}
+              </button>
+              {kBlob && <button className="btn btn-g" onClick={handleDownload}><IDown/> Descargar .WAV</button>}
             </div>
 
-            {pOn
-              ? <div className="playback-view">{renderHL()}</div>
-              : <textarea className="txt-area" value={text}
-                  onChange={e=>{setText(e.target.value);setKBlob(null);if(kSt==='done')setKSt('idle');}}
-                  placeholder="Escribe o pega tu texto aquí…"/>
-            }
-
-            <div style={{display:'flex',gap:'14px',fontSize:'10px',color:'var(--muted)',alignItems:'center'}}>
-              <span>{words} palabras</span><span>·</span>
-              <span>{chars} caracteres</span><span>·</span>
-              <span>{est} est.</span>
-              {pSt==='paused'&&<><span>·</span><div style={{display:'flex',gap:'5px',alignItems:'center'}}><div className="dot da"/><span style={{color:'#fbbf24'}}>PAUSADO</span></div></>}
-              {kSt==='done'&&kBlob&&<><span>·</span><span style={{color:'var(--green)'}}>▲ audio listo</span></>}
-            </div>
-
-            <div style={{minHeight:'34px'}}><Waveform on={pSt==='speaking'}/></div>
-
-            <div style={{borderBottom:'1px solid var(--border)',display:'flex'}}>
-              <button className={`tab ${tab==='preview'?'ta':''}`} onClick={()=>setTab('preview')}>▶ Preview</button>
-              <button className={`tab ${tab==='download'?'tg':''}`} onClick={()=>setTab('download')}>⬇ Descargar WAV</button>
-            </div>
-
-            {tab==='preview' && (
-              <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center',paddingTop:'2px'}}>
-                <button className="btn btn-a" onClick={handlePlay} disabled={!text.trim()}>
-                  <IPlay/> {pSt==='paused'?'REANUDAR':pSt==='speaking'?'REINICIAR':'REPRODUCIR'}
-                </button>
-                <button className={`ghost ${pSt==='paused'?'act':''}`} onClick={handlePause} disabled={pSt==='idle'}>
-                  <IPause/> {pSt==='paused'?'REANUDAR':'PAUSAR'}
-                </button>
-                <button className="ghost dng" onClick={handleStop} disabled={pSt==='idle'}>
-                  <IStop/> DETENER
-                </button>
-                <div style={{marginLeft:'auto',display:'flex',gap:'4px',alignItems:'center',fontSize:'10px',color:'var(--muted)'}}>
-                  <kbd style={{background:'var(--border)',borderRadius:'3px',padding:'2px 5px'}}>Space</kbd><span>pausa</span>
-                  <kbd style={{background:'var(--border)',borderRadius:'3px',padding:'2px 5px',marginLeft:'6px'}}>Esc</kbd><span>stop</span>
-                </div>
+            <div style={{background:'var(--surface2)',padding:'16px',borderRadius:'10px'}}>
+              <div style={{fontSize:'11px',color:'var(--muted)',lineHeight:'1.8'}}>
+                <span style={{color:'var(--green)'}}>SPEECHT5 TTS</span> — modelo neuronal.<br/>
+                Descarga ~130 MB la primera vez.<br/>
+                {/* CORRECCIÓN: Etiqueta strong cerrada correctamente con > */}
+                Genera un archivo <strong style={{color:'var(--text)'}}>.wav</strong> real, listo para usar.
               </div>
-            )}
-
-            {tab==='download' && (
-              <div style={{display:'flex',flexDirection:'column',gap:'12px',paddingTop:'4px'}}>
-                {kBusy && (
-                  <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
-                    <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'var(--muted)'}}>
-                      <span>{kProg.label}</span><span>{kProg.pct}%</span>
-                    </div>
-                    <div className="pbw"><div className="pbf" style={{width:`${kProg.pct}%`,background:'var(--green)'}}/></div>
-                  </div>
-                )}
-
-                {kSt==='idle' && (
-                  <div style={{fontSize:'10px',color:'var(--muted)',background:'var(--surface2)',borderRadius:'8px',padding:'10px 12px',lineHeight:'1.9',border:'1px solid var(--border)'}}>
-                    <span style={{color:'var(--green)'}}>SpeechT5</span> — modelo TTS de Microsoft / Hugging Face.<br/>
-                    Primera carga: ~130 MB (se guarda en caché).<br/>
-                    Genera archivo <strong style={{color:'var(--text)'}}>.wav</strong> real, listo para usar.<br/>
-                    <span style={{color:'var(--accent)'}}>Nota:</span> Voz única predeterminada (neutra).
-                  </div>
-                )}
-
-                <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
-                  <button className="btn btn-g" onClick={handleGenerate} disabled={!text.trim()||kBusy}>
-                    {kBusy?<ISpin/>:<IStar/>}
-                    {kSt==='loading'?'CARGANDO MODELO…':kSt==='synth'?'GENERANDO AUDIO…':'GENERAR AUDIO'}
-                  </button>
-                  {kSt==='done' && kBlob && (
-                    <button className="btn btn-gd" onClick={handleDownloadWav}>
-                      <IDown/> DESCARGAR .WAV
-                    </button>
-                  )}
-                </div>
-
-                {kSt==='done' && audioUrlRef.current && (
-                  <audio controls src={audioUrlRef.current}
-                    style={{width:'100%',filter:'invert(1) hue-rotate(180deg)',borderRadius:'8px',marginTop:'2px'}}/>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="card" style={{padding:'18px',display:'flex',flexDirection:'column',gap:'16px',alignSelf:'start'}}>
-            <div>
-              <span className="lbl" style={{display:'block',marginBottom:'10px'}}>Configuración</span>
-              <hr className="hr"/>
-            </div>
-
-            {tab==='preview' ? <>
-              <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-                <span className="lbl">Idioma</span>
-                <select className="vsel" value={langFilt} onChange={e=>{setLangFilt(e.target.value);setVoiceIdx(0);}}>
-                  {langs.map(l=><option key={l} value={l}>{l==='all'?'🌐 Todos':l.toUpperCase()}</option>)}
-                </select>
-              </div>
-              <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-                <div style={{display:'flex',justifyContent:'space-between'}}>
-                  <span className="lbl">Voz del navegador</span>
-                  <span className="lbl">{filtV.length}</span>
-                </div>
-                <select className="vsel" value={voiceIdx} onChange={e=>setVoiceIdx(parseInt(e.target.value))}>
-                  {filtV.length===0?<option>Cargando…</option>:filtV.map((v,i)=><option key={i} value={i}>{v.name} · {v.lang}</option>)}
-                </select>
-              </div>
-              <hr className="hr"/>
-              <Slider label="Velocidad" value={rate}   min={0.5} max={2} step={0.1} onChange={setRate}   display={`${rate}×`}/>
-              <Slider label="Tono"      value={pitch}  min={0}   max={2} step={0.1} onChange={setPitch}  display={pitch.toFixed(1)}/>
-              <Slider label="Volumen"   value={volume} min={0}   max={1} step={0.1} onChange={setVolume} display={`${Math.round(volume*100)}%`}/>
-            </> : <>
-              <Slider label="Velocidad IA" value={kRate} min={0.5} max={2} step={0.1} onChange={setKRate} display={`${kRate}×`} green/>
-              <hr className="hr"/>
-              <div style={{fontSize:'10px',color:'var(--muted)',lineHeight:'2'}}>
-                <div style={{color:'var(--green)',marginBottom:'4px',letterSpacing:'.06em'}}>SPEECHT5 TTS</div>
-                <div>Motor neuronal VITS-like</div>
-                <div>147M parámetros, cuantizado q8</div>
-                <div>100% local · sin API key</div>
-                <div>Cacheo automático IndexedDB</div>
-                <br/>
-                <div style={{color:'var(--green)',opacity:.7,fontSize:'9px'}}>Xenova/speecht5_tts</div>
-              </div>
-            </>}
-
-            <hr className="hr"/>
-            <div style={{fontSize:'10px',color:'var(--muted)',lineHeight:'1.7'}}>
-              Tu texto <span style={{color:'var(--accent)'}}>nunca sale</span> del dispositivo.
             </div>
           </div>
         </div>
-
         {toast && <div className="toast">{toast}</div>}
       </div>
     );
   }
 
-  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(<App />);
 </script>
 </body>
 </html>
+
