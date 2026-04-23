@@ -18,17 +18,14 @@
       display:flex;align-items:flex-start;justify-content:center;padding:28px 14px}
     .wrap{width:100%;max-width:680px;display:flex;flex-direction:column;gap:14px}
 
-    /* Header */
     .hline{width:40px;height:2px;background:linear-gradient(90deg,var(--acc),transparent);border-radius:2px}
     h1{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:10px}
     h1 span{color:var(--acc)}
     .sub{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
 
-    /* Card */
     .card{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:18px;
       display:flex;flex-direction:column;gap:13px}
 
-    /* Textarea */
     textarea{width:100%;height:190px;background:transparent;border:1px solid var(--brd);
       border-radius:10px;padding:14px;color:var(--txt);font-family:var(--serif);
       font-size:15px;line-height:1.75;resize:none;outline:none;transition:border-color .2s}
@@ -36,7 +33,6 @@
 
     .stats{display:flex;gap:10px;font-size:10px;color:var(--muted);flex-wrap:wrap}
 
-    /* Engine tabs */
     .eng-tabs{display:flex;border-bottom:1px solid var(--brd)}
     .eng-tab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
       padding:8px 16px;border:none;background:transparent;color:var(--muted);cursor:pointer;
@@ -45,18 +41,15 @@
     .eng-tab.active-mms{color:var(--grn);border-bottom-color:var(--grn)}
     .eng-tab.active-kok{color:var(--acc);border-bottom-color:var(--acc)}
 
-    /* Panels */
     .panel{display:none;flex-direction:column;gap:13px}
     .panel.show{display:flex}
 
-    /* Field */
     .flbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
       display:block;margin-bottom:6px}
     select{width:100%;background:#0f0f14;border:1px solid var(--brd);color:var(--txt);
       font-family:var(--mono);font-size:11px;padding:9px 10px;border-radius:8px;outline:none;cursor:pointer}
     select:focus{border-color:var(--acc)}
 
-    /* Info box */
     .info{background:var(--surf2);border:1px solid var(--brd);border-radius:8px;
       padding:11px 14px;font-size:10px;color:var(--muted);line-height:1.9}
     .eng-name{font-size:11px;letter-spacing:.06em;margin-bottom:2px}
@@ -64,18 +57,15 @@
     .badge-grn{background:var(--gdim);color:var(--grn);border:1px solid var(--gbrd)}
     .badge-acc{background:var(--adim);color:var(--acc);border:1px solid rgba(217,119,6,.3)}
 
-    /* Progress */
     .prog{display:none;flex-direction:column;gap:6px}
     .prog.show{display:flex}
     .prog-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
     .prog-bar{height:3px;background:var(--brd);border-radius:3px;overflow:hidden}
     .prog-fill{height:100%;background:var(--grn);border-radius:3px;width:0%;transition:width .4s ease}
 
-    /* Error */
     .errbox{display:none;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.28);
       border-radius:8px;padding:11px 14px;font-size:11px;color:#f87171;line-height:1.7}
 
-    /* Buttons */
     .btn-row{display:flex;gap:10px;flex-wrap:wrap}
     .btn{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.06em;
       border:none;border-radius:8px;padding:11px 20px;cursor:pointer;
@@ -105,7 +95,6 @@
   </div>
 
   <div class="card">
-
     <textarea id="txt" placeholder="Escribe o pega tu texto aquí…">Hola. Escribe aquí el texto que deseas convertir en un archivo de audio descargable.</textarea>
 
     <div class="stats">
@@ -114,10 +103,9 @@
       <span id="se">~0s est.</span>
     </div>
 
-    <!-- Engine tabs -->
     <div class="eng-tabs">
       <button class="eng-tab active-mms" id="tab-mms" onclick="switchEng('mms')">◆ MMS-TTS</button>
-      <button class="eng-tab" id="tab-kok"  onclick="switchEng('kok')">★ Kokoro IA</button>
+      <button class="eng-tab" id="tab-kok" onclick="switchEng('kok')">★ Kokoro IA</button>
     </div>
 
     <!-- MMS panel -->
@@ -151,10 +139,6 @@
       <div>
         <span class="flbl">Voz</span>
         <select id="kok-voice">
-          <optgroup label="🇪🇸 Español">
-            <option value="ef_dora">Dora — femenino</option>
-            <option value="em_alex">Alex — masculino</option>
-          </optgroup>
           <optgroup label="🇺🇸 Inglés americano">
             <option value="af_heart">Heart — femenino suave</option>
             <option value="af_bella">Bella — femenino expresivo</option>
@@ -169,7 +153,7 @@
             <option value="bm_george">George — masculino</option>
             <option value="bm_lewis">Lewis — masculino</option>
           </optgroup>
-          <optgroup label="🌍 Otros">
+          <optgroup label="🌍 Otros idiomas">
             <option value="ff_siwis">Siwis — Francés</option>
             <option value="if_sara">Sara — Italiano</option>
             <option value="hf_alpha">Alpha — Hindi femenino</option>
@@ -179,12 +163,12 @@
       </div>
       <div class="info">
         <div class="eng-name" style="color:var(--acc)">KOKORO TTS v1.0 <span class="badge badge-acc">sin login · Apache 2.0</span></div>
-        Motor neuronal VITS · 82M parámetros · q8 · ~80 MB<br/>
-        16 voces expresivas · Cacheado en IndexedDB.
+        Motor neuronal VITS · 82M parámetros · ~80 MB<br/>
+        Voces en inglés, francés, italiano, hindi · Cacheado en IndexedDB.<br/>
+        <span style="color:rgba(217,119,6,.6);font-size:9px">Nota: voces en español disponibles solo en versión con Python/Node.</span>
       </div>
     </div>
 
-    <!-- Progress -->
     <div class="prog" id="prog">
       <div class="prog-top">
         <span id="prog-lbl">Cargando…</span>
@@ -193,10 +177,8 @@
       <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
     </div>
 
-    <!-- Error -->
     <div class="errbox" id="err"></div>
 
-    <!-- Buttons -->
     <div class="btn-row">
       <button class="btn btn-acc" id="btn-gen">
         <span id="bico">▶</span>
@@ -208,20 +190,22 @@
     <div id="audio-wrap" style="display:none">
       <audio id="player" controls></audio>
     </div>
-
   </div>
 
   <p class="footer">Todo el procesamiento ocurre en tu dispositivo. Tu texto nunca sale del navegador.</p>
-
 </div>
 
 <script type="module">
+// ── MMS-TTS usa @huggingface/transformers (pipeline genérico) ──
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
+
+// ── Kokoro usa su propia librería kokoro-js ──
+import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.mjs';
 
 env.allowLocalModels = false;
 env.useBrowserCache  = true;
 
-// ── WAV encoder ────────────────────────────────────────────
+// ── WAV encoder Float32 → PCM 16-bit ──────────────────────
 function encodeWAV(samples, sr) {
   const buf = new ArrayBuffer(44 + samples.length * 2);
   const dv  = new DataView(buf);
@@ -240,109 +224,150 @@ function encodeWAV(samples, sr) {
 }
 
 // ── DOM ────────────────────────────────────────────────────
-const $      = id => document.getElementById(id);
-const txt    = $('txt');
-const mmsLang= $('mms-lang');
-const kokVoice=$('kok-voice');
-const btnGen = $('btn-gen');
-const btnDl  = $('btn-dl');
-const bico   = $('bico');
-const btxt   = $('btxt');
-const progEl = $('prog');
-const progLbl= $('prog-lbl');
-const progPct= $('prog-pct');
-const progFill=$('prog-fill');
-const errEl  = $('err');
-const audioWrap=$('audio-wrap');
-const player = $('player');
+const $ = id => document.getElementById(id);
+const txt      = $('txt');
+const mmsLang  = $('mms-lang');
+const kokVoice = $('kok-voice');
+const btnGen   = $('btn-gen');
+const btnDl    = $('btn-dl');
+const bico     = $('bico');
+const btxt     = $('btxt');
+const progEl   = $('prog');
+const progLbl  = $('prog-lbl');
+const progPct  = $('prog-pct');
+const progFill = $('prog-fill');
+const errEl    = $('err');
+const audioWrap= $('audio-wrap');
+const player   = $('player');
 
 // ── Estado ─────────────────────────────────────────────────
 let eng = 'mms';
-const pipes = {};
-let audioUrl = null;
+const mmsPipes = {};   // cache por modelo MMS
+let kokoroPipe = null; // instancia única de Kokoro
+let audioUrl   = null;
 
-// ── Stats ──────────────────────────────────────────────────
-function updateStats(){
+// ── Estadísticas ───────────────────────────────────────────
+function updateStats() {
   const t=txt.value, w=t.trim()?t.trim().split(/\s+/).length:0, c=t.length, s=Math.round(w/2.5);
   $('sw').textContent=`${w} palabras`;
   $('sc').textContent=`${c} caracteres`;
   $('se').textContent=s<60?`~${s}s est.`:`~${Math.round(s/60)}min est.`;
 }
-txt.addEventListener('input',updateStats); updateStats();
+txt.addEventListener('input', updateStats); updateStats();
 
-// ── Engine switch ─────────────────────────────────────────
+// ── Engine switcher ────────────────────────────────────────
 window.switchEng = (e) => {
-  eng=e;
-  $('tab-mms').className='eng-tab'+(e==='mms'?' active-mms':'');
-  $('tab-kok').className ='eng-tab'+(e==='kok'?' active-kok':'');
-  $('panel-mms').className='panel'+(e==='mms'?' show':'');
-  $('panel-kok').className ='panel'+(e==='kok'?' show':'');
-  btnDl.style.display='none'; audioWrap.style.display='none';
+  eng = e;
+  $('tab-mms').className = 'eng-tab' + (e==='mms' ? ' active-mms' : '');
+  $('tab-kok').className  = 'eng-tab' + (e==='kok'  ? ' active-kok'  : '');
+  $('panel-mms').className = 'panel' + (e==='mms' ? ' show' : '');
+  $('panel-kok').className  = 'panel' + (e==='kok'  ? ' show'  : '');
+  btnDl.style.display = 'none'; audioWrap.style.display = 'none';
   hideErr(); hideProg();
-  btxt.textContent='GENERAR AUDIO'; bico.textContent='▶';
+  btxt.textContent = 'GENERAR AUDIO'; bico.textContent = '▶';
 };
 
 // ── UI helpers ─────────────────────────────────────────────
-const showErr =(m)=>{ errEl.style.display='block'; errEl.innerHTML=`⚠ <strong>Error:</strong> ${m}<br/><small style="opacity:.6">Abre la consola (F12) para detalles.</small>`; };
-const hideErr =()=>{ errEl.style.display='none'; };
-const setProg =(lbl,pct)=>{ progEl.classList.add('show'); progLbl.textContent=lbl; progPct.textContent=`${pct}%`; progFill.style.width=`${pct}%`; };
-const hideProg=()=>progEl.classList.remove('show');
-const onProg  =(p)=>{
-  if(p.status==='progress'){ const pct=Math.round(p.progress||0); setProg(`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`,pct); }
-  if(p.status==='done') setProg('Modelo listo ✓',100);
+const showErr  = (m) => { errEl.style.display='block'; errEl.innerHTML=`⚠ <strong>Error:</strong> ${m}<br/><small style="opacity:.6">Abre la consola (F12) para detalles.</small>`; };
+const hideErr  = () => { errEl.style.display='none'; };
+const setProg  = (lbl,pct) => { progEl.classList.add('show'); progLbl.textContent=lbl; progPct.textContent=`${pct}%`; progFill.style.width=`${pct}%`; };
+const hideProg = () => progEl.classList.remove('show');
+
+const onMmsProgress = (p) => {
+  if (p.status==='progress') {
+    const pct = Math.round(p.progress||0);
+    setProg(`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`, pct);
+  }
+  if (p.status==='done') setProg('Modelo listo ✓', 100);
 };
 
-// ── Generar ───────────────────────────────────────────────
+// ── Generar ────────────────────────────────────────────────
 btnGen.addEventListener('click', async () => {
-  const text=txt.value.trim(); if(!text) return;
-  hideErr(); btnGen.disabled=true; btnDl.style.display='none';
-  audioWrap.style.display='none';
+  const text = txt.value.trim();
+  if (!text) return;
+
+  hideErr(); btnGen.disabled=true;
+  btnDl.style.display='none'; audioWrap.style.display='none';
   btxt.textContent='CARGANDO…'; bico.innerHTML='<span class="spin"></span>';
 
   try {
-    let result;
+    let samples, sampleRate;
 
-    if(eng==='mms'){
-      const model=mmsLang.value;
-      if(!pipes[model]){
-        const name=model.split('-').pop().toUpperCase();
-        setProg(`Descargando MMS-${name} (~35 MB)…`,0);
-        pipes[model]=await pipeline('text-to-speech',model,{dtype:'fp32',device:'wasm',progress_callback:onProg});
+    if (eng === 'mms') {
+      // ── Motor 1: MMS-TTS via @huggingface/transformers ──
+      const model = mmsLang.value;
+      if (!mmsPipes[model]) {
+        const name = model.split('-').pop().toUpperCase();
+        setProg(`Descargando MMS-${name} (~35 MB)…`, 0);
+        mmsPipes[model] = await pipeline('text-to-speech', model, {
+          dtype: 'fp32', device: 'wasm', progress_callback: onMmsProgress
+        });
       }
-      btxt.textContent='SINTETIZANDO…'; setProg('Generando audio…',60);
-      result=await pipes[model](text);
+      btxt.textContent = 'SINTETIZANDO…';
+      setProg('Generando audio…', 60);
+      const result = await mmsPipes[model](text);
+      samples    = result.audio instanceof Float32Array ? result.audio : new Float32Array(result.audio?.data || result.audio);
+      sampleRate = result.sampling_rate;
 
     } else {
-      // ── Kokoro — nombre correcto con sufijo -ONNX ──
-      const MODEL='onnx-community/Kokoro-82M-v1.0-ONNX';
-      if(!pipes.kokoro){
-        setProg('Descargando Kokoro (~80 MB)…',0);
-        pipes.kokoro=await pipeline('text-to-speech',MODEL,{dtype:'q8',device:'wasm',progress_callback:onProg});
+      // ── Motor 2: Kokoro via kokoro-js ──
+      if (!kokoroPipe) {
+        setProg('Descargando Kokoro (~80 MB)…', 0);
+
+        // kokoro-js carga el modelo con progress integrado
+        kokoroPipe = await KokoroTTS.from_pretrained(
+          'onnx-community/Kokoro-82M-ONNX',
+          {
+            dtype: 'q8',
+            device: 'wasm',
+            progress_callback: (p) => {
+              if (p.status === 'progress') {
+                const pct = Math.round(p.progress || 0);
+                setProg(`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`, pct);
+              }
+              if (p.status === 'done') setProg('Modelo listo ✓', 100);
+            }
+          }
+        );
       }
-      btxt.textContent='SINTETIZANDO…'; setProg('Generando audio…',60);
-      result=await pipes.kokoro(text,{voice:kokVoice.value});
+
+      btxt.textContent = 'SINTETIZANDO…';
+      setProg('Generando audio…', 60);
+
+      const voice  = kokVoice.value;
+      const audio  = await kokoroPipe.generate(text, { voice });
+      // kokoro-js devuelve un objeto RawAudio con .audio (Float32Array) y .sampling_rate
+      samples    = audio.audio instanceof Float32Array ? audio.audio : new Float32Array(audio.audio);
+      sampleRate = audio.sampling_rate || 24000;
     }
 
-    // Render WAV
-    const samples=result.audio instanceof Float32Array
-      ?result.audio:new Float32Array(result.audio?.data||result.audio);
-    const wav=encodeWAV(samples,result.sampling_rate);
-    const blob=new Blob([wav],{type:'audio/wav'});
-    if(audioUrl) URL.revokeObjectURL(audioUrl);
-    audioUrl=URL.createObjectURL(blob);
-    player.src=audioUrl;
-    audioWrap.style.display='block';
-    btnDl.style.display='flex';
-    btnDl.onclick=()=>{ const a=document.createElement('a'); a.href=audioUrl; a.download='textovox.wav'; a.click(); };
-    setProg('Audio listo ✓',100);
-    btxt.textContent='GENERAR DE NUEVO'; bico.textContent='▶';
+    // ── Codificar y mostrar ──
+    const wav  = encodeWAV(samples, sampleRate);
+    const blob = new Blob([wav], { type: 'audio/wav' });
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl = URL.createObjectURL(blob);
 
-  } catch(err){
-    console.error('[TextoVox]',err);
-    showErr(err.message||String(err));
-    hideProg(); btxt.textContent='REINTENTAR'; bico.textContent='▶';
+    player.src = audioUrl;
+    audioWrap.style.display = 'block';
+    btnDl.style.display = 'flex';
+    btnDl.onclick = () => {
+      const a = document.createElement('a');
+      a.href = audioUrl; a.download = 'textovox.wav'; a.click();
+    };
+
+    setProg('Audio listo ✓', 100);
+    btxt.textContent = 'GENERAR DE NUEVO';
+    bico.textContent = '▶';
+
+  } catch(err) {
+    console.error('[TextoVox]', err);
+    showErr(err.message || String(err));
+    hideProg();
+    btxt.textContent = 'REINTENTAR';
+    bico.textContent = '▶';
   }
-  btnGen.disabled=false;
+
+  btnGen.disabled = false;
 });
 </script>
 </body>
