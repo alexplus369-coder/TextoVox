@@ -1,198 +1,383 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TextoVox — IA Voice</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TextoVox — Descargar Audio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lora:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:#0c0c10; --surface:#13131a; --surface2:#1a1a24; --border:#2a2a35;
-      --accent:#d97706; --accent-dim:rgba(217,119,6,0.14); --accent-glow:rgba(217,119,6,0.35);
-      --green:#22c55e; --green-dim:rgba(34,197,94,0.14);
-      --text:#e8e6e0; --muted:#6b6878;
-      --mono:'Space Mono',monospace; --serif:'Lora',Georgia,serif;
+      --bg:     #0c0c10;
+      --surf:   #13131a;
+      --surf2:  #1a1a24;
+      --brd:    #2a2a35;
+      --acc:    #d97706;
+      --adim:   rgba(217,119,6,.15);
+      --aglow:  rgba(217,119,6,.4);
+      --grn:    #22c55e;
+      --gdim:   rgba(34,197,94,.15);
+      --txt:    #e8e6e0;
+      --muted:  #6b6878;
+      --mono:   'Space Mono', monospace;
+      --serif:  'Lora', Georgia, serif;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:20px}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:850px;margin:0 auto}
-    .txt-area{width:100%;height:220px;background:transparent;border:1px solid var(--border);border-radius:10px;
-      padding:16px;color:var(--text);font-family:var(--serif);font-size:16px;line-height:1.7;resize:none;outline:none}
-    .txt-area:focus{border-color:var(--accent)}
-    .btn{font-family:var(--mono);font-weight:700;font-size:12px;padding:12px 20px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:0.2s;border:none}
-    .btn-a{background:var(--accent);color:#000}
-    .btn-a:hover{box-shadow:0 0 15px var(--accent-glow)}
-    .btn-g{background:var(--green);color:#000}
-    .badge{font-size:10px;background:var(--accent-dim);color:var(--accent);padding:2px 6px;border-radius:4px;border:1px solid var(--accent-glow)}
-    .sld{width:100%;height:4px;background:var(--border);border-radius:4px;appearance:none;outline:none}
-    .sld::-webkit-slider-thumb{appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer}
-    .toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--accent);padding:12px;border-radius:8px;font-size:12px;z-index:100}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--txt);
+      font-family: var(--mono); min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 32px 16px;
+    }
+    .wrap { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* Header */
+    .header-bar { width: 40px; height: 2px; background: linear-gradient(90deg, var(--acc), transparent); border-radius: 2px; }
+    h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin-top: 10px; }
+    h1 span { color: var(--acc); }
+    .subtitle { font-size: 10px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-top: 2px; }
+
+    /* Card */
+    .card { background: var(--surf); border: 1px solid var(--brd); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* Textarea */
+    textarea {
+      width: 100%; height: 200px; background: transparent;
+      border: 1px solid var(--brd); border-radius: 10px;
+      padding: 14px; color: var(--txt); font-family: var(--serif);
+      font-size: 15px; line-height: 1.75; resize: none; outline: none;
+      transition: border-color .2s;
+    }
+    textarea:focus { border-color: var(--acc); box-shadow: 0 0 0 2px var(--adim); }
+
+    /* Stats */
+    .stats { display: flex; gap: 12px; font-size: 10px; color: var(--muted); flex-wrap: wrap; }
+    .stats .sep { opacity: .4; }
+
+    /* Voice select */
+    label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    select {
+      width: 100%; background: #0f0f14; border: 1px solid var(--brd);
+      color: var(--txt); font-family: var(--mono); font-size: 11px;
+      padding: 9px 10px; border-radius: 8px; outline: none; cursor: pointer;
+      margin-top: 6px;
+    }
+    select:focus { border-color: var(--acc); }
+
+    /* Progress */
+    .prog-wrap { display: none; flex-direction: column; gap: 6px; }
+    .prog-wrap.show { display: flex; }
+    .prog-label { font-size: 10px; color: var(--muted); display: flex; justify-content: space-between; }
+    .prog-bar { height: 3px; background: var(--brd); border-radius: 3px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--grn); border-radius: 3px; width: 0%; transition: width .3s ease; }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      font-family: var(--mono); font-weight: 700; font-size: 11px;
+      letter-spacing: .06em; border: none; border-radius: 8px;
+      padding: 11px 20px; cursor: pointer; display: flex; align-items: center;
+      gap: 8px; transition: all .15s;
+    }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    #btn-gen { background: var(--acc); color: #000; }
+    #btn-gen:hover:not(:disabled) { background: #b45309; box-shadow: 0 0 18px var(--aglow); }
+    #btn-dl  { background: #166534; color: #4ade80; display: none; }
+    #btn-dl:hover { background: #14532d; }
+
+    /* Audio player */
+    #audio-wrap { display: none; }
+    audio { width: 100%; border-radius: 8px; }
+
+    /* Error box */
+    #err-box {
+      display: none; background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.35);
+      border-radius: 8px; padding: 10px 14px; font-size: 11px; color: #f87171;
+      line-height: 1.6;
+    }
+
+    /* Info box */
+    .info-box {
+      background: var(--surf2); border: 1px solid var(--brd);
+      border-radius: 8px; padding: 12px 14px;
+      font-size: 10px; color: var(--muted); line-height: 1.9;
+    }
+    .info-box .eng { color: var(--grn); font-size: 11px; letter-spacing: .06em; }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { display: inline-block; width: 13px; height: 13px; border: 2px solid currentColor;
+      border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+
+    /* Status dot */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .dot-grn { width: 7px; height: 7px; border-radius: 50%; background: var(--grn); display: inline-block; animation: pulse 1.4s infinite; vertical-align: middle; margin-right: 5px; }
   </style>
 </head>
 <body>
-<div id="root"></div>
+<div class="wrap">
+
+  <div>
+    <div class="header-bar"></div>
+    <h1>Texto<span>Vox</span></h1>
+    <p class="subtitle">Generador de audio — 100% local · sin API · código abierto</p>
+  </div>
+
+  <div class="card">
+
+    <textarea id="txt" placeholder="Escribe o pega tu texto aquí…">Hola. Escribe aquí el texto que deseas convertir en audio. Esta herramienta genera un archivo WAV real directamente en tu navegador.</textarea>
+
+    <div class="stats">
+      <span id="s-words">0 palabras</span><span class="sep">·</span>
+      <span id="s-chars">0 caracteres</span><span class="sep">·</span>
+      <span id="s-est">~0s est.</span>
+    </div>
+
+    <div>
+      <label>Voz (Kokoro TTS)</label>
+      <select id="voice-sel">
+        <option value="ef_dora">🇪🇸 Dora — Español femenino</option>
+        <option value="em_alex">🇪🇸 Alex — Español masculino</option>
+        <option value="af_heart">🇺🇸 Heart — Inglés americano</option>
+        <option value="af_bella">🇺🇸 Bella — Inglés americano</option>
+        <option value="am_adam">🇺🇸 Adam — Inglés americano</option>
+        <option value="am_michael">🇺🇸 Michael — Inglés americano</option>
+        <option value="bf_emma">🇬🇧 Emma — Inglés británico</option>
+        <option value="bm_george">🇬🇧 George — Inglés británico</option>
+        <option value="ff_siwis">🇫🇷 Siwis — Francés</option>
+        <option value="if_sara">🇮🇹 Sara — Italiano</option>
+      </select>
+    </div>
+
+    <div class="prog-wrap" id="prog-wrap">
+      <div class="prog-label">
+        <span id="prog-label">Cargando…</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    </div>
+
+    <div id="err-box"></div>
+
+    <div class="btn-row">
+      <button id="btn-gen">
+        <span id="btn-icon">▶</span>
+        <span id="btn-txt">GENERAR AUDIO</span>
+      </button>
+      <button id="btn-dl">
+        ⬇ DESCARGAR .WAV
+      </button>
+    </div>
+
+    <div id="audio-wrap">
+      <audio id="player" controls></audio>
+    </div>
+
+    <div class="info-box">
+      <div class="eng">KOKORO TTS v1.0</div>
+      Motor neuronal VITS · 82M parámetros · cuantizado q8<br/>
+      Backend: <strong style="color:var(--txt)">WebAssembly</strong> (sin WebGPU, funciona en todo navegador)<br/>
+      Primera vez: ~80 MB cacheados en IndexedDB para siempre<br/>
+      Estado: <span id="engine-state" style="color:var(--txt)">IDLE</span>
+    </div>
+
+  </div>
+
+</div>
 
 <script type="module">
-  import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.1';
-  env.allowLocalModels = false;
-  env.useBrowserCache = true;
+// ─────────────────────────────────────────────────────────
+//  Importar transformers.js — forzamos WASM, sin WebGPU
+// ─────────────────────────────────────────────────────────
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
 
-  let pipe = null;
+env.allowLocalModels = false;
+env.useBrowserCache  = true;
+// ← CRÍTICO: evita el error [WebGPU] MatMul
+env.backends.onnx.wasm.proxy = false;
 
-  window.__tts = {
-    loaded: false,
-    async load(onProgress) {
-      if (pipe) return;
-      pipe = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
-        dtype: 'fp32',
-        device: 'auto',
-        progress_callback: onProgress
-      });
-      this.loaded = true;
-    },
-    async synth(text) {
-      const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
-      return await pipe(text, { speaker_embeddings });
-    }
-  };
+// ─────────────────────────────────────────────────────────
+//  WAV encoder (Float32 → PCM 16-bit)
+// ─────────────────────────────────────────────────────────
+function encodeWAV(samples, sampleRate) {
+  const buf  = new ArrayBuffer(44 + samples.length * 2);
+  const view = new DataView(buf);
+  const str  = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
 
-  window.__encodeWAV = function(samples, sr) {
-    const buf = new ArrayBuffer(44 + samples.length * 2);
-    const v = new DataView(buf);
-    const ws = (o,s) => { for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
-    ws(0,'RIFF'); v.setUint32(4,36+samples.length*2,true);
-    ws(8,'WAVE'); ws(12,'fmt ');
-    v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
-    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true);
-    v.setUint16(32,2,true); v.setUint16(34,16,true);
-    ws(36,'data'); v.setUint32(40,samples.length*2,true);
-    for(let i=0;i<samples.length;i++){
-      const s = Math.max(-1, Math.min(1, samples[i]));
-      v.setInt16(44+i*2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    }
-    return buf;
-  };
-</script>
+  str(0, 'RIFF');  view.setUint32(4,  36 + samples.length * 2, true);
+  str(8, 'WAVE');  str(12, 'fmt ');
+  view.setUint32(16, 16, true);         // chunk size
+  view.setUint16(20, 1, true);          // PCM
+  view.setUint16(22, 1, true);          // mono
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);          // block align
+  view.setUint16(34, 16, true);         // bits per sample
+  str(36, 'data'); view.setUint32(40, samples.length * 2, true);
 
-<script type="text/babel">
-  const { useState, useRef } = React;
+  for (let i = 0; i < samples.length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(44 + i * 2, s * 0x7FFF, true);
+  }
+  return buf;
+}
 
-  const ISpin = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 11-6-8.5"/></svg>;
-  const IDown = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>;
+// ─────────────────────────────────────────────────────────
+//  Estado
+// ─────────────────────────────────────────────────────────
+let pipe = null;
+let audioUrl = null;
 
-  function App() {
-    const [text, setText] = useState('Hola. Ahora el audio funciona y las estadísticas están activas.');
-    const [status, setStatus] = useState('idle');
-    const [prog, setProg] = useState({pct:0, label:''});
-    const [blob, setBlob] = useState(null);
-    const [volume, setVolume] = useState(1.0);
-    const [toast, setToast] = useState('');
-    const audioUrlRef = useRef(null);
+// ─────────────────────────────────────────────────────────
+//  DOM refs
+// ─────────────────────────────────────────────────────────
+const txtEl       = document.getElementById('txt');
+const voiceSel    = document.getElementById('voice-sel');
+const btnGen      = document.getElementById('btn-gen');
+const btnDl       = document.getElementById('btn-dl');
+const btnIcon     = document.getElementById('btn-icon');
+const btnTxt      = document.getElementById('btn-txt');
+const progWrap    = document.getElementById('prog-wrap');
+const progLabel   = document.getElementById('prog-label');
+const progPct     = document.getElementById('prog-pct');
+const progFill    = document.getElementById('prog-fill');
+const audioWrap   = document.getElementById('audio-wrap');
+const player      = document.getElementById('player');
+const errBox      = document.getElementById('err-box');
+const engineState = document.getElementById('engine-state');
+const sWords      = document.getElementById('s-words');
+const sChars      = document.getElementById('s-chars');
+const sEst        = document.getElementById('s-est');
 
-    // Estadísticas
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const estS  = Math.round(words / 2.5);
-    const est   = estS < 60 ? `~${estS}s` : `~${Math.round(estS/60)}min`;
+// ─────────────────────────────────────────────────────────
+//  Estadísticas en tiempo real
+// ─────────────────────────────────────────────────────────
+function updateStats() {
+  const t = txtEl.value;
+  const w = t.trim() ? t.trim().split(/\s+/).length : 0;
+  const c = t.length;
+  const s = Math.round(w / 2.5);
+  sWords.textContent = `${w} palabras`;
+  sChars.textContent = `${c} caracteres`;
+  sEst.textContent   = s < 60 ? `~${s}s est.` : `~${Math.round(s/60)}min est.`;
+}
+txtEl.addEventListener('input', updateStats);
+updateStats();
 
-    const showToast = (m) => { setToast(m); setTimeout(()=>setToast(''), 3000); };
+// ─────────────────────────────────────────────────────────
+//  Helpers UI
+// ─────────────────────────────────────────────────────────
+function setState(state) {
+  engineState.textContent = state.toUpperCase();
+}
+function showErr(msg) {
+  errBox.style.display = 'block';
+  errBox.innerHTML = `⚠ <strong>Error:</strong> ${msg}<br/><small style="opacity:.7">Revisa la consola del navegador (F12) para más detalles.</small>`;
+}
+function hideErr() {
+  errBox.style.display = 'none';
+  errBox.textContent = '';
+}
+function setProgress(label, pct) {
+  progWrap.classList.add('show');
+  progLabel.textContent = label;
+  progPct.textContent   = `${pct}%`;
+  progFill.style.width  = `${pct}%`;
+}
+function hideProgress() {
+  progWrap.classList.remove('show');
+}
 
-    const handleGenerate = async () => {
-      if (!text.trim()) return;
-      setStatus('loading');
-      try {
-        const tts = window.__tts;
-        if (!tts.loaded) {
-          await tts.load(p => {
-            if (p.status === 'progress') setProg({pct: Math.round(p.progress||0), label: `Cargando IA: ${Math.round(p.progress||0)}%`});
-          });
+// ─────────────────────────────────────────────────────────
+//  Generar audio
+// ─────────────────────────────────────────────────────────
+btnGen.addEventListener('click', async () => {
+  const text = txtEl.value.trim();
+  if (!text) return;
+
+  // Reset
+  hideErr();
+  btnGen.disabled = true;
+  btnDl.style.display  = 'none';
+  audioWrap.style.display = 'none';
+  btnTxt.textContent = 'CARGANDO…';
+  btnIcon.innerHTML  = '<span class="spin"></span>';
+
+  try {
+    // ── 1. Cargar modelo si no está cargado ──
+    if (!pipe) {
+      setState('loading');
+      setProgress('Descargando modelo Kokoro (~80 MB)…', 0);
+
+      pipe = await pipeline(
+        'text-to-speech',
+        'onnx-community/Kokoro-82M-v1.0',
+        {
+          dtype: 'q8',
+          device: 'wasm',        // ← FUERZA WASM, sin WebGPU
+          progress_callback: (p) => {
+            if (p.status === 'progress') {
+              const pct = Math.round(p.progress || 0);
+              const name = (p.file || '').split('/').pop() || 'Archivo';
+              setProgress(`${name} — ${pct}%`, pct);
+            }
+            if (p.status === 'done') {
+              setProgress('Modelo listo ✓', 100);
+            }
+          }
         }
-        setStatus('synth');
-        const result = await tts.synth(text);
-        
-        let audioData = result.audio.data || result.audio;
+      );
+    }
 
-        // Aplicar volumen
-        if (volume !== 1.0) {
-          audioData = audioData.map(v => v * volume);
-        }
+    // ── 2. Sintetizar ──
+    setState('synth');
+    btnTxt.textContent = 'SINTETIZANDO…';
+    setProgress('Generando audio…', 50);
 
-        const wav = window.__encodeWAV(audioData, result.sampling_rate);
-        const newBlob = new Blob([wav], {type: 'audio/wav'});
-        setBlob(newBlob);
-        
-        if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
-        audioUrlRef.current = URL.createObjectURL(newBlob);
-        
-        setStatus('done');
-        showToast('✓ Audio generado');
-      } catch (e) {
-        console.error(e);
-        setStatus('idle');
-        showToast('⚠ Error: ' + e.message);
-      }
+    const voiceId = voiceSel.value;
+    const result  = await pipe(text, { voice: voiceId });
+
+    // result.audio es Float32Array, result.sampling_rate es number
+    const samples = result.audio instanceof Float32Array
+      ? result.audio
+      : new Float32Array(result.audio);
+
+    const wavBuf = encodeWAV(samples, result.sampling_rate);
+    const blob   = new Blob([wavBuf], { type: 'audio/wav' });
+
+    // Revocar URL anterior si existe
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl = URL.createObjectURL(blob);
+
+    // Mostrar player
+    player.src = audioUrl;
+    audioWrap.style.display = 'block';
+
+    // Mostrar botón descarga
+    btnDl.style.display = 'flex';
+    btnDl.onclick = () => {
+      const a = document.createElement('a');
+      a.href     = audioUrl;
+      a.download = 'textovox.wav';
+      a.click();
     };
 
-    return (
-      <div className="card">
-        <h1 style={{fontSize:'22px', fontWeight:'700', marginBottom:'20px'}}>Texto<span style={{color:'var(--accent)'}}>Vox</span> IA</h1>
-        
-        <textarea className="txt-area" value={text} onChange={e=>{setText(e.target.value); setBlob(null);}} placeholder="Tu mensaje aquí..."/>
+    // Restaurar botón
+    setState('done');
+    setProgress('Audio listo ✓', 100);
+    btnTxt.textContent = 'GENERAR DE NUEVO';
+    btnIcon.textContent = '▶';
 
-        <div style={{marginTop:'10px', display:'flex', gap:'15px', fontSize:'11px', color:'var(--muted)'}}>
-          <span>{words} palabras</span><span>·</span>
-          <span>{chars} caracteres</span><span>·</span>
-          <span>{est} est.</span>
-          {status === 'done' && blob && <span style={{color:'var(--green)'}}>· LISTO</span>}
-        </div>
-
-        <div style={{marginTop:'20px', display:'grid', gridTemplateColumns:'1fr 250px', gap:'20px'}}>
-          <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-            <button className="btn btn-a" onClick={handleGenerate} disabled={status === 'loading' || status === 'synth'}>
-              {(status === 'loading' || status === 'synth') && <ISpin/>}
-              {status === 'loading' ? prog.label : status === 'synth' ? 'Sintetizando...' : 'Generar Voz con IA'}
-            </button>
-            
-            {blob && (
-              <button className="btn btn-g" onClick={() => {
-                const a = document.createElement('a');
-                a.href = audioUrlRef.current;
-                a.download = 'textovox_ia.wav';
-                a.click();
-              }}>
-                <IDown/> Descargar .WAV
-              </button>
-            )}
-          </div>
-
-          <div style={{background:'var(--surface2)', padding:'15px', borderRadius:'10px', display:'flex', flexDirection:'column', gap:'15px'}}>
-            <div>
-              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
-                <span style={{fontSize:'10px', color:'var(--muted)'}}>VOLUMEN</span>
-                <span className="badge">{Math.round(volume * 100)}%</span>
-              </div>
-              <input type="range" className="sld" min="0" max="1.5" step="0.1" value={volume} onChange={e=>setVolume(parseFloat(e.target.value))}/>
-            </div>
-
-            <div style={{fontSize:'11px', color:'var(--muted)', borderTop:'1px solid var(--border)', paddingTop:'10px'}}>
-              <div style={{color:'var(--green)', marginBottom:'4px'}}>SPEECHT5 ENGINE</div>
-              Modelo: Xenova/speecht5_tts<br/>
-              Estado: <span style={{color:'var(--text)'}}>{status.toUpperCase()}</span>
-            </div>
-          </div>
-        </div>
-        {toast && <div className="toast">{toast}</div>}
-      </div>
-    );
+  } catch (err) {
+    console.error('[TextoVox]', err);
+    showErr(err.message || String(err));
+    setState('error');
+    hideProgress();
+    btnTxt.textContent = 'REINTENTAR';
+    btnIcon.textContent = '▶';
   }
 
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(<App />);
+  btnGen.disabled = false;
+});
 </script>
 </body>
 </html>
