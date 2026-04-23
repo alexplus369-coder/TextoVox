@@ -4,15 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TextoVox — Texto a Voz</title>
-  <!-- Tailwind solo para prototipado (no producción) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React y Babel (para desarrollo; en producción precompilar) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
-    /* Mismo CSS que antes, sin cambios */
     :root {
       --bg:#0c0c10; --surface:#13131a; --surface2:#1a1a24; --border:#2a2a35;
       --accent:#d97706; --accent-dim:rgba(217,119,6,0.14); --accent-glow:rgba(217,119,6,0.35);
@@ -103,7 +100,7 @@
 <body>
 <div id="root"></div>
 
-<!-- TTS Module con SpeechT5 (corregido) -->
+<!-- TTS Module con SpeechT5 (URLs corregidas vía jsDelivr) -->
 <script type="module">
   import { pipeline, env, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0';
   env.allowLocalModels = false;
@@ -112,13 +109,13 @@
   let pipe = null;
   let speakerEmbeddingsCache = {};
 
-  // URLs de embeddings de locutor (formato .npy, 512 floats)
+  // URLs vía jsDelivr (CDN público, sin autenticación)
   const VOICE_EMBEDDING_URLS = {
-    'default': null,  // se usa el embedding por defecto del modelo
-    'en_male_1': 'https://huggingface.co/datasets/Matthijs/speecht5-tts-speaker-embeddings/resolve/main/spk_emb_0.npy',
-    'en_female_1': 'https://huggingface.co/datasets/Matthijs/speecht5-tts-speaker-embeddings/resolve/main/spk_emb_1.npy',
-    'en_male_2': 'https://huggingface.co/datasets/Matthijs/speecht5-tts-speaker-embeddings/resolve/main/spk_emb_2.npy',
-    'en_female_2': 'https://huggingface.co/datasets/Matthijs/speecht5-tts-speaker-embeddings/resolve/main/spk_emb_3.npy',
+    'default': null,
+    'en_male_1': 'https://cdn.jsdelivr.net/gh/Matthijs/speecht5-tts-speaker-embeddings@main/spk_emb_0.npy',
+    'en_female_1': 'https://cdn.jsdelivr.net/gh/Matthijs/speecht5-tts-speaker-embeddings@main/spk_emb_1.npy',
+    'en_male_2': 'https://cdn.jsdelivr.net/gh/Matthijs/speecht5-tts-speaker-embeddings@main/spk_emb_2.npy',
+    'en_female_2': 'https://cdn.jsdelivr.net/gh/Matthijs/speecht5-tts-speaker-embeddings@main/spk_emb_3.npy',
   };
 
   window.__tts = {
@@ -136,7 +133,6 @@
       this.loading = false;
     },
 
-    // Carga un embedding de locutor y lo convierte a Tensor
     async loadSpeakerEmbedding(voiceId) {
       if (voiceId === 'default') return null;
       if (speakerEmbeddingsCache[voiceId]) return speakerEmbeddingsCache[voiceId];
@@ -144,29 +140,33 @@
       const url = VOICE_EMBEDDING_URLS[voiceId];
       if (!url) throw new Error(`Embedding no encontrado para ${voiceId}`);
       
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`No se pudo descargar embedding: ${response.status}`);
-      
-      const buffer = await response.arrayBuffer();
-      const data = new DataView(buffer);
-      // Verificar cabecera NPY
-      const magic = String.fromCharCode(data.getUint8(0), data.getUint8(1), data.getUint8(2), data.getUint8(3), data.getUint8(4), data.getUint8(5));
-      if (magic !== '\x93NUMPY') throw new Error('Formato NPY inválido');
-      
-      const version = data.getUint8(6);
-      const headerLength = version === 1 ? data.getUint16(8, true) : data.getUint32(8, true);
-      const headerStr = new TextDecoder().decode(new Uint8Array(buffer, 10, headerLength));
-      
-      const shapeMatch = headerStr.match(/'shape':\s*\((\d+),\s*(\d+)\)/);
-      if (!shapeMatch) throw new Error('No se pudo leer shape del embedding');
-      const [_, dim1, dim2] = shapeMatch.map(Number);
-      const total = dim1 * dim2;
-      
-      const floatData = new Float32Array(buffer, 10 + headerLength, total);
-      // Crear Tensor con forma [1, dim2] (normalmente 1,512)
-      const tensor = new Tensor('float32', floatData, [1, dim2]);
-      speakerEmbeddingsCache[voiceId] = tensor;
-      return tensor;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const buffer = await response.arrayBuffer();
+        const data = new DataView(buffer);
+        // Verificar cabecera NPY
+        const magic = String.fromCharCode(data.getUint8(0), data.getUint8(1), data.getUint8(2), data.getUint8(3), data.getUint8(4), data.getUint8(5));
+        if (magic !== '\x93NUMPY') throw new Error('Formato NPY inválido');
+        
+        const version = data.getUint8(6);
+        const headerLength = version === 1 ? data.getUint16(8, true) : data.getUint32(8, true);
+        const headerStr = new TextDecoder().decode(new Uint8Array(buffer, 10, headerLength));
+        
+        const shapeMatch = headerStr.match(/'shape':\s*\((\d+),\s*(\d+)\)/);
+        if (!shapeMatch) throw new Error('No se pudo leer shape del embedding');
+        const [_, dim1, dim2] = shapeMatch.map(Number);
+        const total = dim1 * dim2;
+        
+        const floatData = new Float32Array(buffer, 10 + headerLength, total);
+        const tensor = new Tensor('float32', floatData, [1, dim2]);
+        speakerEmbeddingsCache[voiceId] = tensor;
+        return tensor;
+      } catch (err) {
+        console.warn(`No se pudo cargar el embedding ${voiceId}, usando voz predeterminada.`, err);
+        return null;  // fallback a default
+      }
     },
 
     async synth(text, voiceId) {
@@ -179,11 +179,10 @@
       }
       
       const result = await pipe(text, options);
-      return result; // { audio: Float32Array, sampling_rate: number }
+      return result;
     }
   };
 
-  // Codificador WAV (sin cambios)
   window.__encodeWAV = function(samples, sr) {
     const buf = new ArrayBuffer(44 + samples.length * 2);
     const v   = new DataView(buf);
@@ -205,7 +204,6 @@
 <script type="text/babel">
   const { useState, useEffect, useRef, useCallback } = React;
 
-  // Iconos SVG (sin cambios)
   const IPlay  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>;
   const IPause = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
   const IStop  = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>;
@@ -248,7 +246,6 @@
     const [tab,  setTab]    = useState('preview');
     const [toast,setToast]  = useState('');
 
-    // Preview (Web Speech)
     const [voices,    setVoices]    = useState([]);
     const [voiceIdx,  setVoiceIdx]  = useState(0);
     const [langFilt,  setLangFilt]  = useState('es');
@@ -259,7 +256,6 @@
     const [hlR,  setHlR]  = useState(null);
     const synth = useRef(window.speechSynthesis);
 
-    // Download (SpeechT5)
     const [kVoice, setKVoice] = useState('default');
     const [kSt,    setKSt]   = useState('idle');
     const [kProg,  setKProg] = useState({pct:0,label:''});
@@ -387,7 +383,6 @@
 
     return (
       <div style={{maxWidth:'980px',margin:'0 auto',padding:'32px 16px',fontFamily:'var(--mono)'}}>
-        {/* Header */}
         <div style={{marginBottom:'24px'}}>
           <div className="hline" style={{width:'40px',marginBottom:'14px'}}/>
           <div style={{display:'flex',alignItems:'baseline',gap:'12px',flexWrap:'wrap'}}>
@@ -400,11 +395,8 @@
           </div>
         </div>
 
-        {/* Grid */}
         <div style={{display:'grid',gridTemplateColumns:'1fr 290px',gap:'14px'}}>
-          {/* Left */}
           <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
-            {/* Toolbar */}
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
               <span className="lbl">Texto</span>
               <div style={{display:'flex',gap:'6px'}}>
@@ -423,7 +415,6 @@
                   placeholder="Escribe o pega tu texto aquí…"/>
             }
 
-            {/* Stats */}
             <div style={{display:'flex',gap:'14px',fontSize:'10px',color:'var(--muted)',alignItems:'center'}}>
               <span>{words} palabras</span><span>·</span>
               <span>{chars} caracteres</span><span>·</span>
@@ -432,16 +423,13 @@
               {kSt==='done'&&kBlob&&<><span>·</span><span style={{color:'var(--green)'}}>▲ audio listo</span></>}
             </div>
 
-            {/* Waveform */}
             <div style={{minHeight:'34px'}}><Waveform on={pSt==='speaking'}/></div>
 
-            {/* Tabs */}
             <div style={{borderBottom:'1px solid var(--border)',display:'flex'}}>
               <button className={`tab ${tab==='preview'?'ta':''}`} onClick={()=>setTab('preview')}>▶ Preview</button>
               <button className={`tab ${tab==='download'?'tg':''}`} onClick={()=>setTab('download')}>⬇ Descargar WAV</button>
             </div>
 
-            {/* Preview controls */}
             {tab==='preview' && (
               <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center',paddingTop:'2px'}}>
                 <button className="btn btn-a" onClick={handlePlay} disabled={!text.trim()}>
@@ -460,7 +448,6 @@
               </div>
             )}
 
-            {/* Download controls */}
             {tab==='download' && (
               <div style={{display:'flex',flexDirection:'column',gap:'12px',paddingTop:'4px'}}>
                 <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
@@ -507,7 +494,6 @@
             )}
           </div>
 
-          {/* Right: Settings */}
           <div className="card" style={{padding:'18px',display:'flex',flexDirection:'column',gap:'16px',alignSelf:'start'}}>
             <div>
               <span className="lbl" style={{display:'block',marginBottom:'10px'}}>Configuración</span>
