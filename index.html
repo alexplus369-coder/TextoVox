@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,25 +11,24 @@
   <style>
     :root {
       /* Color Palette */
-      --bg: #09090b;        /* Zinc 950 */
-      --surf: rgba(24, 24, 27, 0.7); /* Zinc 900 w/ opacity for glass */
-      --surf2: #27272a;     /* Zinc 800 */
-      --brd: rgba(63, 63, 70, 0.5); /* Zinc 700 */
+      --bg: #09090b;
+      --surf: rgba(24, 24, 27, 0.7);
+      --surf2: #27272a;
+      --brd: rgba(63, 63, 70, 0.5);
       --brd-hover: #52525b;
       
-      --acc: #8b5cf6;       /* Violet 500 */
-      --acc-hover: #7c3aed; /* Violet 600 */
+      --acc: #8b5cf6;
+      --acc-hover: #7c3aed;
       --acc-glow: rgba(139, 92, 246, 0.3);
       --acc-dim: rgba(139, 92, 246, 0.1);
       
-      --grn: #10b981;       /* Emerald 500 */
+      --grn: #10b981;
       --grn-hover: #059669;
       --grn-glow: rgba(16, 185, 129, 0.3);
       --grn-dim: rgba(16, 185, 129, 0.1);
       
-      --txt: #f4f4f5;       /* Zinc 100 */
-      --txt-muted: #a1a1aa; /* Zinc 400 */
-      --txt-dark: #18181b;
+      --txt: #f4f4f5;
+      --txt-muted: #a1a1aa;
       
       /* Typography */
       --font-sans: 'Inter', system-ui, sans-serif;
@@ -61,155 +59,63 @@
 
     /* Background Ambient Glows */
     .bg-glow {
-      position: fixed;
-      width: 600px;
-      height: 600px;
+      position: fixed; width: 600px; height: 600px;
       background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(9,9,11,0) 70%);
-      top: -200px;
-      left: -200px;
-      z-index: -1;
-      border-radius: 50%;
-      pointer-events: none;
+      top: -200px; left: -200px; z-index: -1; border-radius: 50%; pointer-events: none;
     }
     .bg-glow-2 {
-      position: fixed;
-      width: 500px;
-      height: 500px;
+      position: fixed; width: 500px; height: 500px;
       background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(9,9,11,0) 70%);
-      bottom: -100px;
-      right: -100px;
-      z-index: -1;
-      border-radius: 50%;
-      pointer-events: none;
+      bottom: -100px; right: -100px; z-index: -1; border-radius: 50%; pointer-events: none;
     }
 
-    .wrap {
-      width: 100%;
-      max-width: 720px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      position: relative;
-      z-index: 1;
-    }
+    .wrap { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; }
 
     /* Header */
     .header { text-align: center; margin-bottom: 10px; }
     .logo-container {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 14px;
       background: linear-gradient(135deg, var(--surf2), var(--bg));
-      border: 1px solid var(--brd);
-      margin-bottom: 12px;
+      border: 1px solid var(--brd); margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .header h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 6px;
-    }
-    .header h1 span {
-      background: linear-gradient(to right, var(--acc), #d946ef);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .header .sub {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--txt-muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
+    .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .header h1 span { background: linear-gradient(to right, var(--acc), #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header .sub { font-family: var(--font-mono); font-size: 11px; color: var(--txt-muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
     /* Main Card */
     .card {
-      background: var(--surf);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--brd);
-      border-radius: var(--rad-xl);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      background: var(--surf); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--brd); border-radius: var(--rad-xl); padding: 24px;
+      display: flex; flex-direction: column; gap: 20px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     /* Textarea */
     .textarea-wrap { position: relative; }
     textarea {
-      width: 100%;
-      height: 180px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--brd);
-      border-radius: var(--rad-lg);
-      padding: 18px;
-      color: var(--txt);
-      font-family: var(--font-serif);
-      font-size: 16px;
-      line-height: 1.7;
-      resize: vertical;
-      outline: none;
-      transition: all 0.2s;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      width: 100%; height: 180px; background: rgba(0,0,0,0.2);
+      border: 1px solid var(--brd); border-radius: var(--rad-lg); padding: 18px;
+      color: var(--txt); font-family: var(--font-serif); font-size: 16px; line-height: 1.7;
+      resize: vertical; outline: none; transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
     }
-    textarea:focus {
-      border-color: var(--acc);
-      background: rgba(0,0,0,0.3);
-      box-shadow: 0 0 0 3px var(--acc-dim), inset 0 2px 4px rgba(0,0,0,0.1);
-    }
-    textarea::placeholder { color: #52525b; }
+    textarea:focus { border-color: var(--acc); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--acc-dim), inset 0 2px 4px rgba(0,0,0,0.1); }
 
     /* Stats */
-    .stats {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      display: flex;
-      gap: 6px;
-      pointer-events: none;
-    }
+    .stats { position: absolute; bottom: 12px; right: 12px; display: flex; gap: 6px; pointer-events: none; }
     .stat-badge {
-      background: var(--surf2);
-      border: 1px solid var(--brd);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--txt-muted);
-      backdrop-filter: blur(4px);
+      background: var(--surf2); border: 1px solid var(--brd); padding: 4px 10px; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 10px; color: var(--txt-muted); backdrop-filter: blur(4px);
     }
 
-    /* Segmented Control (Tabs) */
-    .eng-tabs {
-      display: flex;
-      background: rgba(0,0,0,0.3);
-      padding: 4px;
-      border-radius: var(--rad-md);
-      border: 1px solid var(--brd);
-      gap: 4px;
-    }
+    /* Tabs */
+    .eng-tabs { display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: var(--rad-md); border: 1px solid var(--brd); gap: 4px; }
     .eng-tab {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 12px;
-      padding: 10px 16px;
-      border: none;
-      background: transparent;
-      color: var(--txt-muted);
-      border-radius: var(--rad-sm);
-      cursor: pointer;
-      transition: all 0.2s ease;
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: var(--font-sans); font-weight: 600; font-size: 12px; padding: 10px 16px;
+      border: none; background: transparent; color: var(--txt-muted); border-radius: var(--rad-sm);
+      cursor: pointer; transition: all 0.2s ease;
     }
     .eng-tab:hover { color: var(--txt); }
     .eng-tab.active-mms { background: var(--grn-dim); color: var(--grn); }
@@ -220,118 +126,32 @@
     .panel.show { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .flbl {
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--txt-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
+    .flbl { font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--txt-muted); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 
     /* Selects */
     .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: '▼';
-      font-size: 8px;
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--txt-muted);
-      pointer-events: none;
-    }
+    .select-wrap::after { content: '▼'; font-size: 8px; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--txt-muted); pointer-events: none; }
     select {
-      width: 100%;
-      appearance: none;
-      background: var(--surf2);
-      border: 1px solid var(--brd);
-      color: var(--txt);
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 12px 36px 12px 14px;
-      border-radius: var(--rad-md);
-      outline: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 100%; appearance: none; background: var(--surf2); border: 1px solid var(--brd);
+      color: var(--txt); font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+      padding: 12px 36px 12px 14px; border-radius: var(--rad-md); outline: none; cursor: pointer;
+      transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     select:focus, select:hover { border-color: var(--brd-hover); background: #2f2f36; }
 
-    /* Info Box */
-    .info {
-      background: rgba(0,0,0,0.2);
-      border: 1px dashed var(--brd);
-      border-radius: var(--rad-md);
-      padding: 12px 16px;
-      font-size: 12px;
-      color: var(--txt-muted);
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .eng-name {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .badge {
-      display: inline-flex;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    /* Info */
+    .info { background: rgba(0,0,0,0.2); border: 1px dashed var(--brd); border-radius: var(--rad-md); padding: 12px 16px; font-size: 12px; color: var(--txt-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 6px; }
+    .eng-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
+    .badge { display: inline-flex; border-radius: 4px; padding: 2px 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; }
     .badge-grn { background: var(--grn-dim); color: var(--grn); border: 1px solid rgba(16,185,129,0.2); }
     .badge-acc { background: var(--acc-dim); color: var(--acc); border: 1px solid rgba(139,92,246,0.2); }
 
-    /* Sliders / Controls */
-    .controls-row {
-      display: flex;
-      gap: 16px;
-      background: rgba(0,0,0,0.2);
-      padding: 16px;
-      border-radius: var(--rad-lg);
-      border: 1px solid var(--brd);
-    }
+    /* Controls */
+    .controls-row { display: flex; gap: 16px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: var(--rad-lg); border: 1px solid var(--brd); }
     .ctrl-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      background: transparent;
-      height: 20px;
-      outline: none;
-    }
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 6px;
-      background: var(--surf2);
-      border-radius: 3px;
-      border: 1px solid var(--brd);
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: var(--txt);
-      margin-top: -6px;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
-      transition: transform 0.1s;
-    }
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 20px; outline: none; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: var(--surf2); border-radius: 3px; border: 1px solid var(--brd); }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--txt); margin-top: -6px; cursor: pointer; box-shadow: 0 0 10px rgba(255,255,255,0.2); transition: transform 0.1s; }
     input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
     .val-display { color: var(--txt); font-family: var(--font-mono); font-size: 11px; background: var(--surf2); padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
@@ -340,119 +160,30 @@
     .prog.show { display: flex; animation: fadeIn 0.3s ease; }
     .prog-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--txt); }
     .prog-bar { height: 6px; background: var(--surf2); border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
-    .prog-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--acc), #d946ef);
-      border-radius: 6px;
-      width: 0%;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-    .prog-fill::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, var(--acc), #d946ef); border-radius: 6px; width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
 
-    /* Error Box */
-    .errbox {
-      display: none;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: var(--rad-md);
-      padding: 14px 16px;
-      font-size: 13px;
-      color: #fca5a5;
-      line-height: 1.6;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
+    /* Errores */
+    .errbox { display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--rad-md); padding: 14px 16px; font-size: 13px; color: #fca5a5; line-height: 1.6; align-items: flex-start; gap: 10px; }
 
-    /* Buttons */
+    /* Botones */
     .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
-    .btn {
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      border: none;
-      border-radius: var(--rad-md);
-      padding: 14px 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      flex: 1;
-      min-width: 200px;
-    }
+    .btn { font-family: var(--font-sans); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; border: none; border-radius: var(--rad-md); padding: 14px 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); flex: 1; min-width: 200px; }
     .btn:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(1); }
-    
-    .btn-acc {
-      background: linear-gradient(135deg, var(--acc), #6d28d9);
-      color: white;
-      box-shadow: 0 4px 12px var(--acc-glow);
-    }
-    .btn-acc:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px var(--acc-glow);
-      filter: brightness(1.1);
-    }
-    .btn-acc:active:not(:disabled) { transform: translateY(0); }
-    
-    .btn-dl {
-      background: var(--surf2);
-      color: var(--txt);
-      border: 1px solid var(--brd);
-      display: none;
-    }
+    .btn-acc { background: linear-gradient(135deg, var(--acc), #6d28d9); color: white; box-shadow: 0 4px 12px var(--acc-glow); }
+    .btn-acc:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px var(--acc-glow); filter: brightness(1.1); }
+    .btn-dl { background: var(--surf2); color: var(--txt); border: 1px solid var(--brd); display: none; }
     .btn-dl:hover { background: var(--brd); color: white; }
 
-    /* Audio Player Customization */
-    #audio-wrap {
-      display: none;
-      background: rgba(0,0,0,0.2);
-      padding: 12px;
-      border-radius: var(--rad-lg);
-      border: 1px solid var(--brd);
-      animation: fadeIn 0.4s ease;
-    }
-    audio {
-      width: 100%;
-      height: 40px;
-      outline: none;
-      border-radius: var(--rad-sm);
-    }
-    /* Webkit custom styling for audio (partial support) */
+    /* Audio */
+    #audio-wrap { display: none; background: rgba(0,0,0,0.2); padding: 12px; border-radius: var(--rad-lg); border: 1px solid var(--brd); animation: fadeIn 0.4s ease; }
+    audio { width: 100%; height: 40px; outline: none; border-radius: var(--rad-sm); }
     audio::-webkit-media-controls-panel { background-color: var(--surf2); }
-    audio::-webkit-media-controls-current-time-display,
-    audio::-webkit-media-controls-time-remaining-display { color: var(--txt); font-family: var(--font-mono); }
+    audio::-webkit-media-controls-current-time-display, audio::-webkit-media-controls-time-remaining-display { color: var(--txt); font-family: var(--font-mono); }
 
-    /* Spinner */
+    /* Misc */
     @keyframes spin { to { transform: rotate(360deg); } }
-    .spin {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .footer {
-      font-size: 11px;
-      color: var(--txt-muted);
-      text-align: center;
-      line-height: 1.7;
-    }
-
-    /* SVG Icons */
+    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .footer { font-size: 11px; color: var(--txt-muted); text-align: center; line-height: 1.7; }
     .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
@@ -464,9 +195,7 @@
 <div class="wrap">
   <div class="header">
     <div class="logo-container">
-      <svg class="icon" style="width: 24px; height: 24px; stroke: var(--acc);" viewBox="0 0 24 24">
-        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line>
-      </svg>
+      <svg class="icon" style="width: 24px; height: 24px; stroke: var(--acc);" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
     </div>
     <h1>Texto<span>Vox</span></h1>
     <p class="sub">Síntesis de voz offline</p>
@@ -496,10 +225,7 @@
     <!-- Panel MMS -->
     <div class="panel show" id="panel-mms">
       <div>
-        <span class="flbl">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          Idioma
-        </span>
+        <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> Idioma</span>
         <div class="select-wrap">
           <select id="mms-lang">
             <option value="Xenova/mms-tts-spa">🇪🇸 Español</option>
@@ -514,20 +240,15 @@
         </div>
       </div>
       <div class="info">
-        <div class="eng-name" style="color:var(--grn)">
-          META MMS-TTS <span class="badge badge-grn">Público</span>
-        </div>
-        <span>Modelo liviano (~35 MB por idioma). 1 voz neutra. Procesamiento y guardado 100% local en IndexedDB.</span>
+        <div class="eng-name" style="color:var(--grn)">META MMS-TTS <span class="badge badge-grn">Público</span></div>
+        <span>Modelo liviano (~35 MB por idioma). 1 voz neutra. Procesamiento 100% local.</span>
       </div>
     </div>
 
     <!-- Panel Kokoro -->
     <div class="panel" id="panel-kok">
       <div>
-        <span class="flbl">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          Voz (Inglés)
-        </span>
+        <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Voz (Inglés)</span>
         <div class="select-wrap">
           <select id="kok-voice">
             <optgroup label="🇺🇸 Inglés americano">
@@ -548,9 +269,7 @@
         </div>
       </div>
       <div class="info">
-        <div class="eng-name" style="color:var(--acc)">
-          KOKORO TTS v1.0 <span class="badge badge-acc">Apache 2.0</span>
-        </div>
+        <div class="eng-name" style="color:var(--acc)">KOKORO TTS v1.0 <span class="badge badge-acc">Apache 2.0</span></div>
         <span>Motor neuronal avanzado (~80 MB). Alta calidad.<br/>
         <span style="color:#d97706;font-size:11px;margin-top:4px;display:inline-block">⚠ Las voces en español para Web están en desarrollo.</span></span>
       </div>
@@ -559,17 +278,11 @@
     <!-- Controles -->
     <div class="controls-row">
       <div class="ctrl-col">
-        <span class="flbl">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          Velocidad <span class="val-display" id="lbl-spd">1.0x</span>
-        </span>
+        <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Velocidad <span class="val-display" id="lbl-spd">1.0x</span></span>
         <input type="range" id="val-spd" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('lbl-spd').textContent=parseFloat(this.value).toFixed(1)+'x'">
       </div>
       <div class="ctrl-col">
-        <span class="flbl">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          Tono <span class="val-display" id="lbl-ptc">Normal</span>
-        </span>
+        <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Tono <span class="val-display" id="lbl-ptc">Normal</span></span>
         <input type="range" id="val-ptc" min="0.7" max="1.3" step="0.05" value="1.0" oninput="updatePitchLabel(this.value)">
       </div>
     </div>
@@ -584,7 +297,7 @@
     </div>
 
     <!-- Errores -->
-    <div class="errbox" id="err" style="display:none"></div>
+    <div class="errbox" id="err"></div>
 
     <!-- Reproductor -->
     <div id="audio-wrap">
@@ -594,4 +307,62 @@
     <!-- Botones -->
     <div class="btn-row">
       <button class="btn btn-acc" id="btn-gen">
-        <svg class="icon" id="bico" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"><
+        <!-- Contenedor del icono fijo para no perder la referencia DOM -->
+        <span id="bico-wrap"><svg class="icon" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></span>
+        <span id="btxt">GENERAR AUDIO</span>
+      </button>
+      <button class="btn btn-dl" id="btn-dl">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        DESCARGAR .WAV
+      </button>
+    </div>
+
+  </div>
+  <p class="footer">Todo el procesamiento de IA ocurre localmente en tu dispositivo.<br/>Tu texto nunca se envía a ningún servidor.</p>
+</div>
+
+<script type="module">
+// ────────────────────────────────────────────────────────────
+// ¡IMPORTANTE! Hemos eliminado los "imports" bloqueantes al inicio.
+// Las librerías ahora se descargarán silenciosamente en segundo plano
+// o justo cuando el usuario haga clic en Generar, garantizando
+// que la interfaz gráfica responda de inmediato al cargar la página.
+// ────────────────────────────────────────────────────────────
+
+// Referencias a las librerías cargadas dinámicamente
+let hfMod = null;
+let kokMod = null;
+
+// Intentamos pre-cargarlas en segundo plano para ahorrar tiempo
+import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3').then(m => {
+  hfMod = m;
+  hfMod.env.allowLocalModels = false;
+  hfMod.env.useBrowserCache  = true;
+}).catch(e => console.warn("La pre-carga de Transformers falló, se intentará luego."));
+
+import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm').then(m => {
+  kokMod = m;
+}).catch(e => console.warn("La pre-carga de Kokoro falló, se intentará luego."));
+
+
+// ── WAV encoder Float32 → PCM 16-bit ──────────────────────
+function encodeWAV(samples, sr) {
+  const buf = new ArrayBuffer(44 + samples.length * 2);
+  const dv  = new DataView(buf);
+  const ws  = (o,s) => { for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
+  ws(0,'RIFF'); dv.setUint32(4,36+samples.length*2,true);
+  ws(8,'WAVE'); ws(12,'fmt ');
+  dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
+  dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true);
+  dv.setUint16(32,2,true);  dv.setUint16(34,16,true);
+  ws(36,'data'); dv.setUint32(40,samples.length*2,true);
+  for(let i=0;i<samples.length;i++){
+    const s=Math.max(-1,Math.min(1,samples[i]));
+    dv.setInt16(44+i*2,s*0x7FFF,true);
+  }
+  return buf;
+}
+
+function concatFloat32Arrays(arrays) {
+  let totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
+  const result = new
