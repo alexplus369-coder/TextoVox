@@ -1,372 +1,597 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TextoVox — Descargar Audio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lora:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>TextoVox — Generador de Audio Local</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg:#0c0c10; --surf:#13131a; --surf2:#1a1a24; --brd:#2a2a35;
-      --acc:#d97706; --adim:rgba(217,119,6,.15); --aglow:rgba(217,119,6,.4);
-      --grn:#22c55e; --gdim:rgba(34,197,94,.14); --gbrd:rgba(34,197,94,.25);
-      --txt:#e8e6e0; --muted:#6b6878;
-      --mono:'Space Mono',monospace; --serif:'Lora',Georgia,serif;
+      /* Color Palette */
+      --bg: #09090b;        /* Zinc 950 */
+      --surf: rgba(24, 24, 27, 0.7); /* Zinc 900 w/ opacity for glass */
+      --surf2: #27272a;     /* Zinc 800 */
+      --brd: rgba(63, 63, 70, 0.5); /* Zinc 700 */
+      --brd-hover: #52525b;
+      
+      --acc: #8b5cf6;       /* Violet 500 */
+      --acc-hover: #7c3aed; /* Violet 600 */
+      --acc-glow: rgba(139, 92, 246, 0.3);
+      --acc-dim: rgba(139, 92, 246, 0.1);
+      
+      --grn: #10b981;       /* Emerald 500 */
+      --grn-hover: #059669;
+      --grn-glow: rgba(16, 185, 129, 0.3);
+      --grn-dim: rgba(16, 185, 129, 0.1);
+      
+      --txt: #f4f4f5;       /* Zinc 100 */
+      --txt-muted: #a1a1aa; /* Zinc 400 */
+      --txt-dark: #18181b;
+      
+      /* Typography */
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-serif: 'Lora', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* Radius */
+      --rad-sm: 8px;
+      --rad-md: 12px;
+      --rad-lg: 16px;
+      --rad-xl: 24px;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--txt);font-family:var(--mono);min-height:100vh;
-      display:flex;align-items:flex-start;justify-content:center;padding:28px 14px}
-    .wrap{width:100%;max-width:680px;display:flex;flex-direction:column;gap:14px}
 
-    .hline{width:40px;height:2px;background:linear-gradient(90deg,var(--acc),transparent);border-radius:2px}
-    h1{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:10px}
-    h1 span{color:var(--acc)}
-    .sub{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--txt);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-    .card{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:18px;
-      display:flex;flex-direction:column;gap:13px}
+    /* Background Ambient Glows */
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(9,9,11,0) 70%);
+      top: -200px;
+      left: -200px;
+      z-index: -1;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .bg-glow-2 {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(9,9,11,0) 70%);
+      bottom: -100px;
+      right: -100px;
+      z-index: -1;
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-    textarea{width:100%;height:190px;background:transparent;border:1px solid var(--brd);
-      border-radius:10px;padding:14px;color:var(--txt);font-family:var(--serif);
-      font-size:15px;line-height:1.75;resize:none;outline:none;transition:border-color .2s}
-    textarea:focus{border-color:var(--acc);box-shadow:0 0 0 2px var(--adim)}
+    .wrap {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
 
-    .stats{display:flex;gap:10px;font-size:10px;color:var(--muted);flex-wrap:wrap}
+    /* Header */
+    .header { text-align: center; margin-bottom: 10px; }
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--surf2), var(--bg));
+      border: 1px solid var(--brd);
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .header h1 span {
+      background: linear-gradient(to right, var(--acc), #d946ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header .sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--txt-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
-    .eng-tabs{display:flex;border-bottom:1px solid var(--brd)}
-    .eng-tab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-      padding:8px 16px;border:none;background:transparent;color:var(--muted);cursor:pointer;
-      border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-    .eng-tab:hover{color:var(--txt)}
-    .eng-tab.active-mms{color:var(--grn);border-bottom-color:var(--grn)}
-    .eng-tab.active-kok{color:var(--acc);border-bottom-color:var(--acc)}
+    /* Main Card */
+    .card {
+      background: var(--surf);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--brd);
+      border-radius: var(--rad-xl);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
 
-    .panel{display:none;flex-direction:column;gap:13px}
-    .panel.show{display:flex}
+    /* Textarea */
+    .textarea-wrap { position: relative; }
+    textarea {
+      width: 100%;
+      height: 180px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--brd);
+      border-radius: var(--rad-lg);
+      padding: 18px;
+      color: var(--txt);
+      font-family: var(--font-serif);
+      font-size: 16px;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    textarea:focus {
+      border-color: var(--acc);
+      background: rgba(0,0,0,0.3);
+      box-shadow: 0 0 0 3px var(--acc-dim), inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    textarea::placeholder { color: #52525b; }
 
-    .flbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
-      display:block;margin-bottom:6px}
-    select{width:100%;background:#0f0f14;border:1px solid var(--brd);color:var(--txt);
-      font-family:var(--mono);font-size:11px;padding:9px 10px;border-radius:8px;outline:none;cursor:pointer}
-    select:focus{border-color:var(--acc)}
+    /* Stats */
+    .stats {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      display: flex;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .stat-badge {
+      background: var(--surf2);
+      border: 1px solid var(--brd);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--txt-muted);
+      backdrop-filter: blur(4px);
+    }
 
-    .info{background:var(--surf2);border:1px solid var(--brd);border-radius:8px;
-      padding:11px 14px;font-size:10px;color:var(--muted);line-height:1.9}
-    .eng-name{font-size:11px;letter-spacing:.06em;margin-bottom:2px}
-    .badge{display:inline-block;border-radius:3px;padding:1px 6px;font-size:9px}
-    .badge-grn{background:var(--gdim);color:var(--grn);border:1px solid var(--gbrd)}
-    .badge-acc{background:var(--adim);color:var(--acc);border:1px solid rgba(217,119,6,.3)}
+    /* Segmented Control (Tabs) */
+    .eng-tabs {
+      display: flex;
+      background: rgba(0,0,0,0.3);
+      padding: 4px;
+      border-radius: var(--rad-md);
+      border: 1px solid var(--brd);
+      gap: 4px;
+    }
+    .eng-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 12px;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--txt-muted);
+      border-radius: var(--rad-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .eng-tab:hover { color: var(--txt); }
+    .eng-tab.active-mms { background: var(--grn-dim); color: var(--grn); }
+    .eng-tab.active-kok { background: var(--acc-dim); color: var(--acc); }
 
-    .prog{display:none;flex-direction:column;gap:6px}
-    .prog.show{display:flex}
-    .prog-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
-    .prog-bar{height:3px;background:var(--brd);border-radius:3px;overflow:hidden}
-    .prog-fill{height:100%;background:var(--grn);border-radius:3px;width:0%;transition:width .4s ease}
+    /* Panels */
+    .panel { display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease; }
+    .panel.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .errbox{display:none;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.28);
-      border-radius:8px;padding:11px 14px;font-size:11px;color:#f87171;line-height:1.7}
+    .flbl {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--txt-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
 
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.06em;
-      border:none;border-radius:8px;padding:11px 20px;cursor:pointer;
-      display:flex;align-items:center;gap:8px;transition:all .15s}
-    .btn:disabled{cursor:not-allowed;opacity:.4}
-    .btn-acc{background:var(--acc);color:#000}
-    .btn-acc:hover:not(:disabled){background:#b45309;box-shadow:0 0 18px var(--aglow)}
-    .btn-dl{background:#166534;color:#4ade80;display:none}
-    .btn-dl:hover{background:#14532d}
+    /* Selects */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▼';
+      font-size: 8px;
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--txt-muted);
+      pointer-events: none;
+    }
+    select {
+      width: 100%;
+      appearance: none;
+      background: var(--surf2);
+      border: 1px solid var(--brd);
+      color: var(--txt);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 36px 12px 14px;
+      border-radius: var(--rad-md);
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    select:focus, select:hover { border-color: var(--brd-hover); background: #2f2f36; }
 
-    audio{width:100%;border-radius:8px}
+    /* Info Box */
+    .info {
+      background: rgba(0,0,0,0.2);
+      border: 1px dashed var(--brd);
+      border-radius: var(--rad-md);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--txt-muted);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .eng-name {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      display: inline-flex;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-grn { background: var(--grn-dim); color: var(--grn); border: 1px solid rgba(16,185,129,0.2); }
+    .badge-acc { background: var(--acc-dim); color: var(--acc); border: 1px solid rgba(139,92,246,0.2); }
 
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;
-      border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+    /* Sliders / Controls */
+    .controls-row {
+      display: flex;
+      gap: 16px;
+      background: rgba(0,0,0,0.2);
+      padding: 16px;
+      border-radius: var(--rad-lg);
+      border: 1px solid var(--brd);
+    }
+    .ctrl-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+      height: 20px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surf2);
+      border-radius: 3px;
+      border: 1px solid var(--brd);
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: var(--txt);
+      margin-top: -6px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      transition: transform 0.1s;
+    }
+    input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
+    .val-display { color: var(--txt); font-family: var(--font-mono); font-size: 11px; background: var(--surf2); padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    .footer{font-size:9px;color:var(--muted);text-align:center;padding:2px 0;line-height:1.7}
+    /* Progress */
+    .prog { display: none; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: var(--rad-lg); border: 1px solid var(--brd); }
+    .prog.show { display: flex; animation: fadeIn 0.3s ease; }
+    .prog-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--txt); }
+    .prog-bar { height: 6px; background: var(--surf2); border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--acc), #d946ef);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .prog-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+    /* Error Box */
+    .errbox {
+      display: none;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--rad-md);
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #fca5a5;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+    .btn {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      border: none;
+      border-radius: var(--rad-md);
+      padding: 14px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      flex: 1;
+      min-width: 200px;
+    }
+    .btn:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(1); }
+    
+    .btn-acc {
+      background: linear-gradient(135deg, var(--acc), #6d28d9);
+      color: white;
+      box-shadow: 0 4px 12px var(--acc-glow);
+    }
+    .btn-acc:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px var(--acc-glow);
+      filter: brightness(1.1);
+    }
+    .btn-acc:active:not(:disabled) { transform: translateY(0); }
+    
+    .btn-dl {
+      background: var(--surf2);
+      color: var(--txt);
+      border: 1px solid var(--brd);
+      display: none;
+    }
+    .btn-dl:hover { background: var(--brd); color: white; }
+
+    /* Audio Player Customization */
+    #audio-wrap {
+      display: none;
+      background: rgba(0,0,0,0.2);
+      padding: 12px;
+      border-radius: var(--rad-lg);
+      border: 1px solid var(--brd);
+      animation: fadeIn 0.4s ease;
+    }
+    audio {
+      width: 100%;
+      height: 40px;
+      outline: none;
+      border-radius: var(--rad-sm);
+    }
+    /* Webkit custom styling for audio (partial support) */
+    audio::-webkit-media-controls-panel { background-color: var(--surf2); }
+    audio::-webkit-media-controls-current-time-display,
+    audio::-webkit-media-controls-time-remaining-display { color: var(--txt); font-family: var(--font-mono); }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: var(--txt-muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    /* SVG Icons */
+    .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div>
-    <div class="hline"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo-container">
+      <svg class="icon" style="width: 24px; height: 24px; stroke: var(--acc);" viewBox="0 0 24 24">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line>
+      </svg>
+    </div>
     <h1>Texto<span>Vox</span></h1>
-    <p class="sub">Generador de audio — local · sin servidor · sin login</p>
+    <p class="sub">Síntesis de voz offline</p>
   </div>
 
   <div class="card">
-    <textarea id="txt" placeholder="Escribe o pega tu texto aquí…">Hola. Escribe aquí el texto que deseas convertir en un archivo de audio descargable.</textarea>
-
-    <div class="stats">
-      <span id="sw">0 palabras</span><span style="opacity:.4">·</span>
-      <span id="sc">0 caracteres</span><span style="opacity:.4">·</span>
-      <span id="se">~0s est.</span>
+    <div class="textarea-wrap">
+      <textarea id="txt" placeholder="Escribe o pega tu texto aquí…">Hola. Escribe aquí el texto que deseas convertir en un archivo de audio descargable. Ya no hay límite de longitud, el sistema dividirá este texto en oraciones pequeñas para un procesamiento óptimo.</textarea>
+      <div class="stats">
+        <div class="stat-badge"><span id="sw">0</span> pal.</div>
+        <div class="stat-badge"><span id="sc">0</span> car.</div>
+        <div class="stat-badge"><span id="se">~0s</span></div>
+      </div>
     </div>
 
     <div class="eng-tabs">
-      <button class="eng-tab active-mms" id="tab-mms" onclick="switchEng('mms')">◆ MMS-TTS</button>
-      <button class="eng-tab" id="tab-kok" onclick="switchEng('kok')">★ Kokoro IA</button>
+      <button class="eng-tab active-mms" id="tab-mms" onclick="switchEng('mms')">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+        MMS-TTS
+      </button>
+      <button class="eng-tab" id="tab-kok" onclick="switchEng('kok')">
+        <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Kokoro IA
+      </button>
     </div>
 
+    <!-- Panel MMS -->
     <div class="panel show" id="panel-mms">
       <div>
-        <span class="flbl">Idioma (1 voz por idioma)</span>
-        <select id="mms-lang">
-          <option value="Xenova/mms-tts-spa">🇪🇸 Español</option>
-          <option value="Xenova/mms-tts-eng">🇺🇸 Inglés</option>
-          <option value="Xenova/mms-tts-fra">🇫🇷 Francés</option>
-          <option value="Xenova/mms-tts-deu">🇩🇪 Alemán</option>
-          <option value="Xenova/mms-tts-ita">🇮🇹 Italiano</option>
-          <option value="Xenova/mms-tts-por">🇧🇷 Portugués</option>
-          <option value="Xenova/mms-tts-rus">🇷🇺 Ruso</option>
-          <option value="Xenova/mms-tts-jpn">🇯🇵 Japonés</option>
-          <option value="Xenova/mms-tts-cmn">🇨🇳 Chino mandarín</option>
-          <option value="Xenova/mms-tts-ara">🇸🇦 Árabe</option>
-          <option value="Xenova/mms-tts-hin">🇮🇳 Hindi</option>
-          <option value="Xenova/mms-tts-kor">🇰🇷 Coreano</option>
-        </select>
+        <span class="flbl">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Idioma
+        </span>
+        <div class="select-wrap">
+          <select id="mms-lang">
+            <option value="Xenova/mms-tts-spa">🇪🇸 Español</option>
+            <option value="Xenova/mms-tts-eng">🇺🇸 Inglés</option>
+            <option value="Xenova/mms-tts-fra">🇫🇷 Francés</option>
+            <option value="Xenova/mms-tts-deu">🇩🇪 Alemán</option>
+            <option value="Xenova/mms-tts-ita">🇮🇹 Italiano</option>
+            <option value="Xenova/mms-tts-por">🇧🇷 Portugués</option>
+            <option value="Xenova/mms-tts-rus">🇷🇺 Ruso</option>
+            <option value="Xenova/mms-tts-jpn">🇯🇵 Japonés</option>
+          </select>
+        </div>
       </div>
       <div class="info">
-        <div class="eng-name" style="color:var(--grn)">META MMS-TTS <span class="badge badge-grn">público · sin login</span></div>
-        1100+ idiomas · ~35 MB por idioma · 1 voz neutra<br/>
-        Sin cuenta. Cacheado en IndexedDB.
+        <div class="eng-name" style="color:var(--grn)">
+          META MMS-TTS <span class="badge badge-grn">Público</span>
+        </div>
+        <span>Modelo liviano (~35 MB por idioma). 1 voz neutra. Procesamiento y guardado 100% local en IndexedDB.</span>
       </div>
     </div>
 
+    <!-- Panel Kokoro -->
     <div class="panel" id="panel-kok">
       <div>
-        <span class="flbl">Voz</span>
-        <select id="kok-voice">
-          <optgroup label="🇺🇸 Inglés americano">
-            <option value="af_heart">Heart — femenino suave</option>
-            <option value="af_bella">Bella — femenino expresivo</option>
-            <option value="af_sarah">Sarah — femenino claro</option>
-            <option value="af_nicole">Nicole — femenino íntimo</option>
-            <option value="am_adam">Adam — masculino</option>
-            <option value="am_michael">Michael — masculino profundo</option>
-          </optgroup>
-          <optgroup label="🇬🇧 Inglés británico">
-            <option value="bf_emma">Emma — femenino</option>
-            <option value="bf_isabella">Isabella — femenino</option>
-            <option value="bm_george">George — masculino</option>
-            <option value="bm_lewis">Lewis — masculino</option>
-          </optgroup>
-          <optgroup label="🌍 Otros idiomas">
-            <option value="ff_siwis">Siwis — Francés</option>
-            <option value="if_sara">Sara — Italiano</option>
-            <option value="hf_alpha">Alpha — Hindi femenino</option>
-            <option value="hm_omega">Omega — Hindi masculino</option>
-          </optgroup>
-        </select>
+        <span class="flbl">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Voz (Inglés)
+        </span>
+        <div class="select-wrap">
+          <select id="kok-voice">
+            <optgroup label="🇺🇸 Inglés americano">
+              <option value="af_heart">Heart — femenino suave</option>
+              <option value="af_bella">Bella — femenino expresivo</option>
+              <option value="af_sarah">Sarah — femenino claro</option>
+              <option value="af_nicole">Nicole — femenino íntimo</option>
+              <option value="am_adam">Adam — masculino</option>
+              <option value="am_michael">Michael — masculino profundo</option>
+            </optgroup>
+            <optgroup label="🇬🇧 Inglés británico">
+              <option value="bf_emma">Emma — femenino</option>
+              <option value="bf_isabella">Isabella — femenino</option>
+              <option value="bm_george">George — masculino</option>
+              <option value="bm_lewis">Lewis — masculino</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
       <div class="info">
-        <div class="eng-name" style="color:var(--acc)">KOKORO TTS v1.0 <span class="badge badge-acc">sin login · Apache 2.0</span></div>
-        Motor neuronal VITS · 82M parámetros · ~80 MB<br/>
-        Voces en inglés, francés, italiano, hindi · Cacheado en IndexedDB.<br/>
-        <span style="color:rgba(217,119,6,.6);font-size:9px">Nota: voces en español disponibles solo en versión con Python/Node.</span>
+        <div class="eng-name" style="color:var(--acc)">
+          KOKORO TTS v1.0 <span class="badge badge-acc">Apache 2.0</span>
+        </div>
+        <span>Motor neuronal avanzado (~80 MB). Alta calidad.<br/>
+        <span style="color:#d97706;font-size:11px;margin-top:4px;display:inline-block">⚠ Las voces en español para Web están en desarrollo.</span></span>
       </div>
     </div>
 
+    <!-- Controles -->
+    <div class="controls-row">
+      <div class="ctrl-col">
+        <span class="flbl">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Velocidad <span class="val-display" id="lbl-spd">1.0x</span>
+        </span>
+        <input type="range" id="val-spd" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('lbl-spd').textContent=parseFloat(this.value).toFixed(1)+'x'">
+      </div>
+      <div class="ctrl-col">
+        <span class="flbl">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Tono <span class="val-display" id="lbl-ptc">Normal</span>
+        </span>
+        <input type="range" id="val-ptc" min="0.7" max="1.3" step="0.05" value="1.0" oninput="updatePitchLabel(this.value)">
+      </div>
+    </div>
+
+    <!-- Progreso -->
     <div class="prog" id="prog">
       <div class="prog-top">
-        <span id="prog-lbl">Cargando…</span>
-        <span id="prog-pct">0%</span>
+        <span id="prog-lbl">Iniciando motor neuronal…</span>
+        <span id="prog-pct" style="font-weight:600; color:var(--acc)">0%</span>
       </div>
       <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
     </div>
 
-    <div class="errbox" id="err"></div>
+    <!-- Errores -->
+    <div class="errbox" id="err" style="display:none"></div>
 
-    <div class="btn-row">
-      <button class="btn btn-acc" id="btn-gen">
-        <span id="bico">▶</span>
-        <span id="btxt">GENERAR AUDIO</span>
-      </button>
-      <button class="btn btn-dl" id="btn-dl">⬇ DESCARGAR .WAV</button>
-    </div>
-
-    <div id="audio-wrap" style="display:none">
+    <!-- Reproductor -->
+    <div id="audio-wrap">
       <audio id="player" controls></audio>
     </div>
-  </div>
 
-  <p class="footer">Todo el procesamiento ocurre en tu dispositivo. Tu texto nunca sale del navegador.</p>
-</div>
-
-<script type="module">
-// ── MMS-TTS usa @huggingface/transformers (pipeline genérico) ──
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
-
-// ── Kokoro usa su propia librería kokoro-js (USANDO RUTA ESM CORRECTA) ──
-import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm';
-
-env.allowLocalModels = false;
-env.useBrowserCache  = true;
-
-// ── WAV encoder Float32 → PCM 16-bit ──────────────────────
-function encodeWAV(samples, sr) {
-  const buf = new ArrayBuffer(44 + samples.length * 2);
-  const dv  = new DataView(buf);
-  const ws  = (o,s) => { for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
-  ws(0,'RIFF'); dv.setUint32(4,36+samples.length*2,true);
-  ws(8,'WAVE'); ws(12,'fmt ');
-  dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
-  dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true);
-  dv.setUint16(32,2,true);  dv.setUint16(34,16,true);
-  ws(36,'data'); dv.setUint32(40,samples.length*2,true);
-  for(let i=0;i<samples.length;i++){
-    const s=Math.max(-1,Math.min(1,samples[i]));
-    dv.setInt16(44+i*2,s*0x7FFF,true);
-  }
-  return buf;
-}
-
-// ── DOM ────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const txt      = $('txt');
-const mmsLang  = $('mms-lang');
-const kokVoice = $('kok-voice');
-const btnGen   = $('btn-gen');
-const btnDl    = $('btn-dl');
-const bico     = $('bico');
-const btxt     = $('btxt');
-const progEl   = $('prog');
-const progLbl  = $('prog-lbl');
-const progPct  = $('prog-pct');
-const progFill = $('prog-fill');
-const errEl    = $('err');
-const audioWrap= $('audio-wrap');
-const player   = $('player');
-
-// ── Estado ─────────────────────────────────────────────────
-let eng = 'mms';
-const mmsPipes = {};   // cache por modelo MMS
-let kokoroPipe = null; // instancia única de Kokoro
-let audioUrl   = null;
-
-// ── Estadísticas ───────────────────────────────────────────
-function updateStats() {
-  const t=txt.value, w=t.trim()?t.trim().split(/\s+/).length:0, c=t.length, s=Math.round(w/2.5);
-  $('sw').textContent=`${w} palabras`;
-  $('sc').textContent=`${c} caracteres`;
-  $('se').textContent=s<60?`~${s}s est.`:`~${Math.round(s/60)}min est.`;
-}
-txt.addEventListener('input', updateStats); updateStats();
-
-// ── Engine switcher ────────────────────────────────────────
-window.switchEng = (e) => {
-  eng = e;
-  $('tab-mms').className = 'eng-tab' + (e==='mms' ? ' active-mms' : '');
-  $('tab-kok').className  = 'eng-tab' + (e==='kok'  ? ' active-kok'  : '');
-  $('panel-mms').className = 'panel' + (e==='mms' ? ' show' : '');
-  $('panel-kok').className  = 'panel' + (e==='kok'  ? ' show'  : '');
-  btnDl.style.display = 'none'; audioWrap.style.display = 'none';
-  hideErr(); hideProg();
-  btxt.textContent = 'GENERAR AUDIO'; bico.textContent = '▶';
-};
-
-// ── UI helpers ─────────────────────────────────────────────
-const showErr  = (m) => { errEl.style.display='block'; errEl.innerHTML=`⚠ <strong>Error:</strong> ${m}<br/><small style="opacity:.6">Abre la consola (F12) para detalles.</small>`; };
-const hideErr  = () => { errEl.style.display='none'; };
-const setProg  = (lbl,pct) => { progEl.classList.add('show'); progLbl.textContent=lbl; progPct.textContent=`${pct}%`; progFill.style.width=`${pct}%`; };
-const hideProg = () => progEl.classList.remove('show');
-
-const onMmsProgress = (p) => {
-  if (p.status==='progress') {
-    const pct = Math.round(p.progress||0);
-    setProg(`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`, pct);
-  }
-  if (p.status==='done') setProg('Modelo listo ✓', 100);
-};
-
-// ── Generar ────────────────────────────────────────────────
-btnGen.addEventListener('click', async () => {
-  const text = txt.value.trim();
-  if (!text) return;
-
-  hideErr(); btnGen.disabled=true;
-  btnDl.style.display='none'; audioWrap.style.display='none';
-  btxt.textContent='CARGANDO…'; bico.innerHTML='<span class="spin"></span>';
-
-  try {
-    let samples, sampleRate;
-
-    if (eng === 'mms') {
-      // ── Motor 1: MMS-TTS via @huggingface/transformers ──
-      const model = mmsLang.value;
-      if (!mmsPipes[model]) {
-        const name = model.split('-').pop().toUpperCase();
-        setProg(`Descargando MMS-${name} (~35 MB)…`, 0);
-        mmsPipes[model] = await pipeline('text-to-speech', model, {
-          dtype: 'fp32', device: 'wasm', progress_callback: onMmsProgress
-        });
-      }
-      btxt.textContent = 'SINTETIZANDO…';
-      setProg('Generando audio…', 60);
-      const result = await mmsPipes[model](text);
-      samples    = result.audio instanceof Float32Array ? result.audio : new Float32Array(result.audio?.data || result.audio);
-      sampleRate = result.sampling_rate;
-
-    } else {
-      // ── Motor 2: Kokoro via kokoro-js ──
-      if (!kokoroPipe) {
-        setProg('Descargando Kokoro (~80 MB)…', 0);
-
-        // ACTUALIZACIÓN DE MODELO: Kokoro-82M-v1.0-ONNX es la nueva ruta obligatoria
-        kokoroPipe = await KokoroTTS.from_pretrained(
-          'onnx-community/Kokoro-82M-v1.0-ONNX',
-          {
-            dtype: 'q8',
-            device: 'wasm',
-            progress_callback: (p) => {
-              if (p.status === 'progress') {
-                const pct = Math.round(p.progress || 0);
-                setProg(`${(p.file||'').split('/').pop()||'Cargando'} — ${pct}%`, pct);
-              }
-              if (p.status === 'done') setProg('Modelo listo ✓', 100);
-            }
-          }
-        );
-      }
-
-      btxt.textContent = 'SINTETIZANDO…';
-      setProg('Generando audio…', 60);
-
-      const voice  = kokVoice.value;
-      const audio  = await kokoroPipe.generate(text, { voice });
-      
-      samples    = audio.audio instanceof Float32Array ? audio.audio : new Float32Array(audio.audio);
-      sampleRate = audio.sampling_rate || 24000;
-    }
-
-    // ── Codificar y mostrar ──
-    const wav  = encodeWAV(samples, sampleRate);
-    const blob = new Blob([wav], { type: 'audio/wav' });
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-    audioUrl = URL.createObjectURL(blob);
-
-    player.src = audioUrl;
-    audioWrap.style.display = 'block';
-    btnDl.style.display = 'flex';
-    btnDl.onclick = () => {
-      const a = document.createElement('a');
-      a.href = audioUrl; a.download = 'textovox.wav'; a.click();
-    };
-
-    setProg('Audio listo ✓', 100);
-    btxt.textContent = 'GENERAR DE NUEVO';
-    bico.textContent = '▶';
-
-  } catch(err) {
-    console.error('[TextoVox]', err);
-    showErr(err.message || String(err));
-    hideProg();
-    btxt.textContent = 'REINTENTAR';
-    bico.textContent = '▶';
-  }
-
-  btnGen.disabled = false;
-});
-</script>
-</body>
-</html>
+    <!-- Botones -->
+    <div class="btn-row">
+      <button class="btn btn-acc" id="btn-gen">
+        <svg class="icon" id="bico" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"><
