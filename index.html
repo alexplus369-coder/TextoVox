@@ -11,54 +11,23 @@
   
   <style>
     :root {
-      /* Color Palette */
-      --bg: #09090b;
-      --surf: rgba(24, 24, 27, 0.7);
-      --surf2: #27272a;
-      --brd: rgba(63, 63, 70, 0.5);
-      --brd-hover: #52525b;
-      
-      --acc: #8b5cf6;
-      --acc-hover: #7c3aed;
-      --acc-glow: rgba(139, 92, 246, 0.3);
-      --acc-dim: rgba(139, 92, 246, 0.1);
-      
-      --grn: #10b981;
-      --grn-hover: #059669;
-      --grn-glow: rgba(16, 185, 129, 0.3);
-      --grn-dim: rgba(16, 185, 129, 0.1);
-      
-      --txt: #f4f4f5;
-      --txt-muted: #a1a1aa;
-      
-      /* Typography */
-      --font-sans: 'Inter', system-ui, sans-serif;
-      --font-serif: 'Lora', Georgia, serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      
-      /* Radius */
-      --rad-sm: 8px;
-      --rad-md: 12px;
-      --rad-lg: 16px;
-      --rad-xl: 24px;
+      --bg: #09090b; --surf: rgba(24, 24, 27, 0.7); --surf2: #27272a;
+      --brd: rgba(63, 63, 70, 0.5); --brd-hover: #52525b;
+      --acc: #8b5cf6; --acc-hover: #7c3aed; --acc-glow: rgba(139, 92, 246, 0.3); --acc-dim: rgba(139, 92, 246, 0.1);
+      --grn: #10b981; --grn-hover: #059669; --grn-glow: rgba(16, 185, 129, 0.3); --grn-dim: rgba(16, 185, 129, 0.1);
+      --txt: #f4f4f5; --txt-muted: #a1a1aa;
+      --font-sans: 'Inter', system-ui, sans-serif; --font-serif: 'Lora', Georgia, serif; --font-mono: 'JetBrains Mono', monospace;
+      --rad-sm: 8px; --rad-md: 12px; --rad-lg: 16px; --rad-xl: 24px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      background-color: var(--bg);
-      color: var(--txt);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      position: relative;
-      overflow-x: hidden;
+      background-color: var(--bg); color: var(--txt); font-family: var(--font-sans);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px; position: relative; overflow-x: hidden;
     }
 
-    /* Background Ambient Glows */
     .bg-glow {
       position: fixed; width: 600px; height: 600px;
       background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(9,9,11,0) 70%);
@@ -72,28 +41,23 @@
 
     .wrap { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; }
 
-    /* Header */
     .header { text-align: center; margin-bottom: 10px; }
     .logo-container {
       display: inline-flex; align-items: center; justify-content: center;
       width: 48px; height: 48px; border-radius: 14px;
       background: linear-gradient(135deg, var(--surf2), var(--bg));
-      border: 1px solid var(--brd); margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border: 1px solid var(--brd); margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
     .header h1 span { background: linear-gradient(to right, var(--acc), #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .header .sub { font-family: var(--font-mono); font-size: 11px; color: var(--txt-muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
-    /* Main Card */
     .card {
       background: var(--surf); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--brd); border-radius: var(--rad-xl); padding: 24px;
-      display: flex; flex-direction: column; gap: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      display: flex; flex-direction: column; gap: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
-    /* Textarea */
     .textarea-wrap { position: relative; }
     textarea {
       width: 100%; height: 180px; background: rgba(0,0,0,0.2);
@@ -103,37 +67,36 @@
     }
     textarea:focus { border-color: var(--acc); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--acc-dim), inset 0 2px 4px rgba(0,0,0,0.1); }
 
-    /* Stats */
     .stats { position: absolute; bottom: 12px; right: 12px; display: flex; gap: 6px; pointer-events: none; }
     .stat-badge {
       background: var(--surf2); border: 1px solid var(--brd); padding: 4px 10px; border-radius: 20px;
       font-family: var(--font-mono); font-size: 10px; color: var(--txt-muted); backdrop-filter: blur(4px);
     }
 
-    /* Tabs */
     .eng-tabs { 
       display: flex; background: rgba(0,0,0,0.3); padding: 4px; 
       border-radius: var(--rad-md); border: 1px solid var(--brd); gap: 4px; 
-      position: relative; z-index: 10; /* Asegura que sea clickeable */
+      position: relative; z-index: 10;
     }
     .eng-tab {
       flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
       font-family: var(--font-sans); font-weight: 600; font-size: 12px; padding: 10px 16px;
       border: none; background: transparent; color: var(--txt-muted); border-radius: var(--rad-sm);
-      cursor: pointer; transition: all 0.2s ease;
+      cursor: pointer; transition: all 0.2s ease; user-select: none;
     }
     .eng-tab:hover { color: var(--txt); }
     .eng-tab.active-mms { background: var(--grn-dim); color: var(--grn); }
     .eng-tab.active-kok { background: var(--acc-dim); color: var(--acc); }
 
-    /* Panels */
+    /* BLOQUEO DE EVENTOS EN LOS ICONOS PARA ASEGURAR QUE EL CLIC VAYA AL BOTÓN */
+    .icon { pointer-events: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
     .panel { display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease; }
     .panel.show { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
     .flbl { font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--txt-muted); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 
-    /* Selects */
     .select-wrap { position: relative; }
     .select-wrap::after { content: '▼'; font-size: 8px; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--txt-muted); pointer-events: none; }
     select {
@@ -144,33 +107,28 @@
     }
     select:focus, select:hover { border-color: var(--brd-hover); background: #2f2f36; }
 
-    /* Info */
     .info { background: rgba(0,0,0,0.2); border: 1px dashed var(--brd); border-radius: var(--rad-md); padding: 12px 16px; font-size: 12px; color: var(--txt-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 6px; }
     .eng-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
     .badge { display: inline-flex; border-radius: 4px; padding: 2px 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; }
     .badge-grn { background: var(--grn-dim); color: var(--grn); border: 1px solid rgba(16,185,129,0.2); }
     .badge-acc { background: var(--acc-dim); color: var(--acc); border: 1px solid rgba(139,92,246,0.2); }
 
-    /* Controls */
     .controls-row { display: flex; gap: 16px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: var(--rad-lg); border: 1px solid var(--brd); }
     .ctrl-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 20px; outline: none; }
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 20px; outline: none; cursor: pointer; }
     input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: var(--surf2); border-radius: 3px; border: 1px solid var(--brd); }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--txt); margin-top: -6px; cursor: pointer; box-shadow: 0 0 10px rgba(255,255,255,0.2); transition: transform 0.1s; }
     input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
     .val-display { color: var(--txt); font-family: var(--font-mono); font-size: 11px; background: var(--surf2); padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* Progress */
     .prog { display: none; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: var(--rad-lg); border: 1px solid var(--brd); }
     .prog.show { display: flex; animation: fadeIn 0.3s ease; }
     .prog-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--txt); }
     .prog-bar { height: 6px; background: var(--surf2); border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
     .prog-fill { height: 100%; background: linear-gradient(90deg, var(--acc), #d946ef); border-radius: 6px; width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
 
-    /* Errores */
     .errbox { display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--rad-md); padding: 14px 16px; font-size: 13px; color: #fca5a5; line-height: 1.6; align-items: flex-start; gap: 10px; }
 
-    /* Botones */
     .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
     .btn { font-family: var(--font-sans); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; border: none; border-radius: var(--rad-md); padding: 14px 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); flex: 1; min-width: 200px; }
     .btn:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(1); }
@@ -179,17 +137,14 @@
     .btn-dl { background: var(--surf2); color: var(--txt); border: 1px solid var(--brd); display: none; }
     .btn-dl:hover { background: var(--brd); color: white; }
 
-    /* Audio */
     #audio-wrap { display: none; background: rgba(0,0,0,0.2); padding: 12px; border-radius: var(--rad-lg); border: 1px solid var(--brd); animation: fadeIn 0.4s ease; }
     audio { width: 100%; height: 40px; outline: none; border-radius: var(--rad-sm); }
     audio::-webkit-media-controls-panel { background-color: var(--surf2); }
     audio::-webkit-media-controls-current-time-display, audio::-webkit-media-controls-time-remaining-display { color: var(--txt); font-family: var(--font-mono); }
 
-    /* Misc */
     @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; pointer-events: none; }
     .footer { font-size: 11px; color: var(--txt-muted); text-align: center; line-height: 1.7; }
-    .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
 <body>
@@ -216,13 +171,12 @@
       </div>
     </div>
 
-    <!-- Se eliminaron los onclick en línea para mayor seguridad y compatibilidad -->
     <div class="eng-tabs">
-      <button class="eng-tab active-mms" id="tab-mms">
+      <button type="button" class="eng-tab active-mms" id="tab-mms">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
         MMS-TTS
       </button>
-      <button class="eng-tab" id="tab-kok">
+      <button type="button" class="eng-tab" id="tab-kok">
         <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
         Kokoro IA
       </button>
@@ -285,12 +239,10 @@
     <div class="controls-row">
       <div class="ctrl-col">
         <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Velocidad <span class="val-display" id="lbl-spd">1.0x</span></span>
-        <!-- Se eliminó el oninput en línea -->
         <input type="range" id="val-spd" min="0.5" max="2.0" step="0.1" value="1.0">
       </div>
       <div class="ctrl-col">
         <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Tono <span class="val-display" id="lbl-ptc">Normal</span></span>
-        <!-- Se eliminó el oninput en línea -->
         <input type="range" id="val-ptc" min="0.7" max="1.3" step="0.05" value="1.0">
       </div>
     </div>
@@ -314,13 +266,13 @@
 
     <!-- Botones -->
     <div class="btn-row">
-      <button class="btn btn-acc" id="btn-gen">
-        <span id="bico-wrap"><svg class="icon" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></span>
-        <span id="btxt">GENERAR AUDIO</span>
+      <button type="button" class="btn btn-acc" id="btn-gen">
+        <span id="bico-wrap" style="pointer-events: none;"><svg class="icon" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></span>
+        <span id="btxt" style="pointer-events: none;">GENERAR AUDIO</span>
       </button>
-      <button class="btn btn-dl" id="btn-dl">
+      <button type="button" class="btn btn-dl" id="btn-dl">
         <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        DESCARGAR .WAV
+        <span style="pointer-events: none;">DESCARGAR .WAV</span>
       </button>
     </div>
 
@@ -329,53 +281,64 @@
 </div>
 
 <script type="module">
-// Referencias a las librerías cargadas dinámicamente
-let hfMod = null;
-let kokMod = null;
+// ────────────────────────────────────────────────────────────
+// 1. GARANTIZAR LA INTERFAZ PRIMERO
+// Todo el código de botones y pestañas se ejecuta instantáneamente
+// antes de intentar cualquier conexión externa o importación.
+// ────────────────────────────────────────────────────────────
 
-// Intentamos pre-cargarlas en segundo plano
-import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3').then(m => {
-  hfMod = m;
-  hfMod.env.allowLocalModels = false;
-  hfMod.env.useBrowserCache  = true;
-}).catch(e => console.warn("La pre-carga de Transformers falló, se intentará luego."));
+console.log("🚀 TextoVox Inicializado (Versión sin caché)");
 
-import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm').then(m => {
-  kokMod = m;
-}).catch(e => console.warn("La pre-carga de Kokoro falló, se intentará luego."));
+const $ = id => document.getElementById(id);
+const txt      = $('txt');
+const tabMms   = $('tab-mms');
+const tabKok   = $('tab-kok');
+const valSpd   = $('val-spd');
+const valPtc   = $('val-ptc');
+const lblSpd   = $('lbl-spd');
+const lblPtc   = $('lbl-ptc');
+const mmsLang  = $('mms-lang');
+const kokVoice = $('kok-voice');
+const btnGen   = $('btn-gen');
+const btnDl    = $('btn-dl');
+const bicoWrap = $('bico-wrap');
+const btxt     = $('btxt');
+const progEl   = $('prog');
+const progLbl  = $('prog-lbl');
+const progPct  = $('prog-pct');
+const progFill = $('prog-fill');
+const errEl    = $('err');
+const audioWrap= $('audio-wrap');
+const player   = $('player');
 
+const ICONS = {
+  play: '<svg class="icon" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
+  spin: '<span class="spin"></span>',
+  retry: '<svg class="icon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.5-11.27l5.67-5.67"></path></svg>'
+};
 
-// ── WAV encoder Float32 → PCM 16-bit ──────────────────────
-function encodeWAV(samples, sr) {
-  const buf = new ArrayBuffer(44 + samples.length * 2);
-  const dv  = new DataView(buf);
-  const ws  = (o,s) => { for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
-  ws(0,'RIFF'); dv.setUint32(4,36+samples.length*2,true);
-  ws(8,'WAVE'); ws(12,'fmt ');
-  dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
-  dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true);
-  dv.setUint16(32,2,true);  dv.setUint16(34,16,true);
-  ws(36,'data'); dv.setUint32(40,samples.length*2,true);
-  for(let i=0;i<samples.length;i++){
-    const s=Math.max(-1,Math.min(1,samples[i]));
-    dv.setInt16(44+i*2,s*0x7FFF,true);
-  }
-  return buf;
+let eng = 'mms';
+
+// Eventos de Pestañas (Asegurados)
+tabMms.addEventListener('click', () => switchEng('mms'));
+tabKok.addEventListener('click', () => switchEng('kok'));
+
+function switchEng(e) {
+  eng = e;
+  tabMms.className = 'eng-tab' + (e==='mms' ? ' active-mms' : '');
+  tabKok.className = 'eng-tab' + (e==='kok'  ? ' active-kok'  : '');
+  $('panel-mms').className = 'panel' + (e==='mms' ? ' show' : '');
+  $('panel-kok').className = 'panel' + (e==='kok'  ? ' show'  : '');
+  
+  progFill.style.background = e==='mms' ? 'linear-gradient(90deg, var(--grn), #34d399)' : 'linear-gradient(90deg, var(--acc), #d946ef)';
+  
+  btnDl.style.display = 'none'; 
+  audioWrap.style.display = 'none';
+  hideErr(); 
+  hideProg();
+  btxt.textContent = 'GENERAR AUDIO'; 
+  bicoWrap.innerHTML = ICONS.play;
 }
 
-function concatFloat32Arrays(arrays) {
-  let totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
-  const result = new Float32Array(totalLength);
-  let offset = 0;
-  for (const arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
-  }
-  return result;
-}
-
-async function adjustSpeed(audioData, sr, speed) {
-  if (speed === 1.0) return audioData;
-  const duration = audioData.length / sr;
-  const offlineCtx = new OfflineAudioContext(1, Math.ceil((duration / speed) * sr), sr);
-  const buffer = offlineCtx.createBuff
+// Eventos de Sliders y Texto
+valSpd.addEventListener('input', (e) => { lblSpd.textContent = parseFloat(e.target.value).toFixed(1) + 'x'
