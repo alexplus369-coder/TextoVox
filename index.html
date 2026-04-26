@@ -110,7 +110,11 @@
     }
 
     /* Tabs */
-    .eng-tabs { display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: var(--rad-md); border: 1px solid var(--brd); gap: 4px; }
+    .eng-tabs { 
+      display: flex; background: rgba(0,0,0,0.3); padding: 4px; 
+      border-radius: var(--rad-md); border: 1px solid var(--brd); gap: 4px; 
+      position: relative; z-index: 10; /* Asegura que sea clickeable */
+    }
     .eng-tab {
       flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
       font-family: var(--font-sans); font-weight: 600; font-size: 12px; padding: 10px 16px;
@@ -211,12 +215,13 @@
       </div>
     </div>
 
+    <!-- Se eliminaron los onclick en línea para mayor seguridad y compatibilidad -->
     <div class="eng-tabs">
-      <button class="eng-tab active-mms" id="tab-mms" onclick="switchEng('mms')">
+      <button class="eng-tab active-mms" id="tab-mms">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
         MMS-TTS
       </button>
-      <button class="eng-tab" id="tab-kok" onclick="switchEng('kok')">
+      <button class="eng-tab" id="tab-kok">
         <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
         Kokoro IA
       </button>
@@ -279,11 +284,13 @@
     <div class="controls-row">
       <div class="ctrl-col">
         <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Velocidad <span class="val-display" id="lbl-spd">1.0x</span></span>
-        <input type="range" id="val-spd" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('lbl-spd').textContent=parseFloat(this.value).toFixed(1)+'x'">
+        <!-- Se eliminó el oninput en línea -->
+        <input type="range" id="val-spd" min="0.5" max="2.0" step="0.1" value="1.0">
       </div>
       <div class="ctrl-col">
         <span class="flbl"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Tono <span class="val-display" id="lbl-ptc">Normal</span></span>
-        <input type="range" id="val-ptc" min="0.7" max="1.3" step="0.05" value="1.0" oninput="updatePitchLabel(this.value)">
+        <!-- Se eliminó el oninput en línea -->
+        <input type="range" id="val-ptc" min="0.7" max="1.3" step="0.05" value="1.0">
       </div>
     </div>
 
@@ -307,7 +314,6 @@
     <!-- Botones -->
     <div class="btn-row">
       <button class="btn btn-acc" id="btn-gen">
-        <!-- Contenedor del icono fijo para no perder la referencia DOM -->
         <span id="bico-wrap"><svg class="icon" viewBox="0 0 24 24" style="fill:currentColor; stroke:none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></span>
         <span id="btxt">GENERAR AUDIO</span>
       </button>
@@ -322,18 +328,11 @@
 </div>
 
 <script type="module">
-// ────────────────────────────────────────────────────────────
-// ¡IMPORTANTE! Hemos eliminado los "imports" bloqueantes al inicio.
-// Las librerías ahora se descargarán silenciosamente en segundo plano
-// o justo cuando el usuario haga clic en Generar, garantizando
-// que la interfaz gráfica responda de inmediato al cargar la página.
-// ────────────────────────────────────────────────────────────
-
 // Referencias a las librerías cargadas dinámicamente
 let hfMod = null;
 let kokMod = null;
 
-// Intentamos pre-cargarlas en segundo plano para ahorrar tiempo
+// Intentamos pre-cargarlas en segundo plano
 import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3').then(m => {
   hfMod = m;
   hfMod.env.allowLocalModels = false;
@@ -365,4 +364,17 @@ function encodeWAV(samples, sr) {
 
 function concatFloat32Arrays(arrays) {
   let totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
-  const result = new
+  const result = new Float32Array(totalLength);
+  let offset = 0;
+  for (const arr of arrays) {
+    result.set(arr, offset);
+    offset += arr.length;
+  }
+  return result;
+}
+
+async function adjustSpeed(audioData, sr, speed) {
+  if (speed === 1.0) return audioData;
+  const duration = audioData.length / sr;
+  const offlineCtx = new OfflineAudioContext(1, Math.ceil((duration / speed) * sr), sr);
+  const buffer = offlineCtx.createBuff
